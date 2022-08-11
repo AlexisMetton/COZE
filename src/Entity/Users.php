@@ -47,9 +47,15 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $discussions;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Message::class, mappedBy="user_id")
+     */
+    private $messages;
+
     public function __construct()
     {
         $this->discussions = new ArrayCollection();
+        $this->messages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -170,6 +176,36 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->discussions->removeElement($discussion)) {
             $discussion->removeMembre($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Message>
+     */
+    public function getMessages(): Collection
+    {
+        return $this->messages;
+    }
+
+    public function addMessage(Message $message): self
+    {
+        if (!$this->messages->contains($message)) {
+            $this->messages[] = $message;
+            $message->setUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMessage(Message $message): self
+    {
+        if ($this->messages->removeElement($message)) {
+            // set the owning side to null (unless already changed)
+            if ($message->getUserId() === $this) {
+                $message->setUserId(null);
+            }
         }
 
         return $this;

@@ -24,9 +24,15 @@ class Discussion
      */
     private $membres;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Message::class, mappedBy="discussion_id")
+     */
+    private $messages;
+
     public function __construct()
     {
         $this->membres = new ArrayCollection();
+        $this->messages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -54,6 +60,36 @@ class Discussion
     public function removeMembre(Users $membre): self
     {
         $this->membres->removeElement($membre);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Message>
+     */
+    public function getMessages(): Collection
+    {
+        return $this->messages;
+    }
+
+    public function addMessage(Message $message): self
+    {
+        if (!$this->messages->contains($message)) {
+            $this->messages[] = $message;
+            $message->setDiscussionId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMessage(Message $message): self
+    {
+        if ($this->messages->removeElement($message)) {
+            // set the owning side to null (unless already changed)
+            if ($message->getDiscussionId() === $this) {
+                $message->setDiscussionId(null);
+            }
+        }
 
         return $this;
     }
