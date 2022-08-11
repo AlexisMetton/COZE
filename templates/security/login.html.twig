@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Coze - Connexion{% endblock %}
+
+{% block body %}
+<form method="post">
+    {% if error %}
+        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
+
+    {% if app.user %}
+        <div class="mb-3">
+            Vous êtes déja connecté en tant que {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Déconnexion</a><a href="{{ path('home') }}">{{ app.user.userIdentifier }}</a>
+        </div>
+    {% endif %}
+
+    <h1 id="connexion" class="h3 mb-3 font-weight-normal"><span></span>CONNEXION<span></span></h1>
+    <label for="inputUsername">Pseudo</label>
+    <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" autocomplete="username" required autofocus><br>
+    <label for="inputPassword">Password</label>
+    <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required><br>
+
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"
+    >
+
+    {#
+        Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
+        See https://symfony.com/doc/current/security/remember_me.html
+
+        <div class="checkbox mb-3">
+            <label>
+                <input type="checkbox" name="_remember_me"> Remember me
+            </label>
+        </div>
+    #}
+
+    <a>
+        <span><button id="btn_form" class="btn btn-lg btn-primary" type="submit">
+        Se connecter
+        </button></span>
+        <span class="line -right"></span>
+        <span class="line -top"></span>
+        <span class="line -left"></span>
+        <span class="line -bottom"></span>
+    </a>
+
+    <div class="drops">
+        <div class="drop drop-1"></div>
+        <div class="drop drop-2"></div>
+        <div class="drop drop-3"></div>
+        <div class="drop drop-4"></div>
+        <div class="drop drop-5"></div>
+        <div class="drop drop-6"></div>
+    </div>
+</form>
+{% endblock %}
