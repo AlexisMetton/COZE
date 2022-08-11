@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello DiscussionController!{% endblock %}
+{% block title %}{{titre}}{% endblock %}
 
 {% block body %}
 <style>
@@ -8,13 +8,14 @@
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
 </style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+<header>
+    <img src='' alt='Logo Coze'>
+    <h2>{{titre}}</h2>
+</header>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/Users/rimk/OneDrive/Bureau/COZE/src/Controller/DiscussionController.php'|file_link(0) }}">src/Controller/DiscussionController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/Users/rimk/OneDrive/Bureau/COZE/templates/discussion/index.html.twig'|file_link(0) }}">templates/discussion/index.html.twig</a></code></li>
-    </ul>
-</div>
+<main>
+    <div id='liste-message'></div>
+    <div id='zone-envoi'><div>
+</main>
+
 {% endblock %}

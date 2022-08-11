@@ -29,6 +29,11 @@ class Discussion
      */
     private $messages;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $nom;
+
     public function __construct()
     {
         $this->membres = new ArrayCollection();
@@ -90,6 +95,18 @@ class Discussion
                 $message->setDiscussionId(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(?string $nom): self
+    {
+        $this->nom = $nom;
 
         return $this;
     }
