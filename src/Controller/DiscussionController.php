@@ -11,9 +11,21 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class DiscussionController extends AbstractController
 {
-    #[Route('/discussion/{id}', name: 'app_discussion')]
-    public function conversation(int $id): Response
+    #[Route('/discussion/create', name: 'create_discussion')]
+    public function createDiscussion(DiscussionRepository $discussion_repository): Response
     {
+        $discussion_repository->add(new Discussion());
+        return $this->render('discussion/index.html.twig', [
+            'titre' => $discussion->getNom() | $membre2->getUsername(),
+            'membres' => $discussion->getMembre(),
+            'messages' => $discussion->getMessage(),
+        ]);
+    }
+
+    #[Route('/discussion/{id}', name: 'app_discussion')]
+    public function conversation(int $id, DiscussionRepository $discussion_repository): Response
+    {
+        $discussion = $discussion_repository->find($id);
         $user = $this->getUser();
         $membre2;
         foreach($discussion->getMembre() as $membre){
@@ -21,8 +33,6 @@ class DiscussionController extends AbstractController
                 $membre2 = $membre;
             }
         }
-        $discussion_repository = new DiscussionRepository();
-        $discussion = $discussion_repository.find($id, );
         return $this->render('discussion/index.html.twig', [
             'titre' => $discussion->getNom() | $membre2->getUsername(),
             'membres' => $discussion->getMembre(),
