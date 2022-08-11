@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UsersRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -39,6 +41,16 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="string", length=255, nullable=false)
      */
     private $email;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Discussion::class, mappedBy="membres")
+     */
+    private $discussions;
+
+    public function __construct()
+    {
+        $this->discussions = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -132,6 +144,33 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(?string $email): self
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Discussion>
+     */
+    public function getDiscussions(): Collection
+    {
+        return $this->discussions;
+    }
+
+    public function addDiscussion(Discussion $discussion): self
+    {
+        if (!$this->discussions->contains($discussion)) {
+            $this->discussions[] = $discussion;
+            $discussion->addMembre($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDiscussion(Discussion $discussion): self
+    {
+        if ($this->discussions->removeElement($discussion)) {
+            $discussion->removeMembre($this);
+        }
 
         return $this;
     }
