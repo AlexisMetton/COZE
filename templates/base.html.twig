@@ -17,8 +17,8 @@
     <body>
         <section id="section_1">
             <header>
-                <h1>C<span><img src="{{ asset('img/coze.svg') }}" height="48px"></span>ZE</h1>
-                <div class="container"><button class="btn" href="">INSCRIPTION</button></div>
+                <a style="color:black;" href="{{ path('home') }}"><h1>C<span><img src="{{ asset('img/coze.svg') }}" height="48px"></span>ZE</h1></a>
+                <div class="container"><a href="{{ path('home') }}"><button class="btn">INSCRIPTION</button></a></div>
             </header>
             {% block body %}{% endblock %}
         </section>      
