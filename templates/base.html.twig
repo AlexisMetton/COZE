@@ -8,12 +8,19 @@
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
+        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+        <section id="section_1">
+            <header>
+                <h1>C<span><img src="{{ asset('img/coze.svg') }}" height="48px"></span>ZE</h1>
+                <div class="container"><button class="btn" href="">INSCRIPTION</button></div>
+            </header>
+            {% block body %}{% endblock %}
+        </section>      
     </body>
 </html>
