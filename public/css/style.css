@@ -110,7 +110,7 @@ header .btn:hover::before {
 #connexion{
     width: 100%;
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     font-size: 30px;
 }
 #connexion span{
@@ -235,8 +235,8 @@ form input:active {
 .drop-4 {
     height: 120px;
     width: 120px;
-    top: -60px;
-    right: -60px;
+    top: -50px;
+    right: -50px;
 }
 .drop-5 {
     height: 60px;
