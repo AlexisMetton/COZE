@@ -18,6 +18,7 @@ class MessageController extends AbstractController
     #[Route('/message/start/{$membre}', name: 'start_message')]
     public function StartDiscussion(int $membre, DiscussionRepository $discussion_repository, UsersRepository $user_repository, MessageRepository $message_repository, Request $request, EntityManagerInterface $entityManager): Response
     {
+        /** @var \App\Entity\Users $user */
         $user = $this->getUser();
         $discussion = new Discussion();
         $discussion->addMembre($user_repository->find($user->getId()));
@@ -38,8 +39,9 @@ class MessageController extends AbstractController
     }
 
     #[Route('/message/envoi/{id}', name: 'send_message')]
-    public function sendMessage(int $id, DiscussionRepository $discussion_repository, UsersRepository $user_repository, MessageRepository $message_repository, Request $request, EntityManagerInterface $entityManager): Response
+    public function sendMessage(int $id, DiscussionRepository $discussion_repository, UsersRepository $user_repository, MessageRepository $message_repository, Request $request, EntityManagerInterface $entityManager)
     {
+        /** @var \App\Entity\Users $user */
         $user = $this->getUser();
         $discussion = $discussion_repository->find($id);
         $message = new Message();
