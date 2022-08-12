@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Users;
 use App\Form\RegistrationFormType;
+use App\Repository\UsersRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,6 +32,9 @@ class RegistrationController extends AbstractController
                 )
             );
 
+            //On génère le token d'activation
+            $user->setActivationToken(md5(uniqid()));
+
             $entityManager->persist($user);
             $entityManager->flush();
             // do anything else you need here, like send an email
@@ -41,5 +45,29 @@ class RegistrationController extends AbstractController
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),
         ]);
+    }
+
+    /**
+     * @Route("/activation/{token}", name="activation")
+     */
+    public function activation($token, UsersRepository $usersRepo){
+        // On vérifie si un utilisateur a ce token
+        $user = $usersRepo->findOneBy(['activation_token' => $token]);
+
+        // Si aucun utilisateur existe avec ce token
+        if(!$user){
+            throw $this->createNotFoundException('Cet utilisateur n\'existe pas');
+        }
+
+        // On supprime le token
+        $user->setActivationToken(null);
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        // On envoie un message flash
+        $this->addFlash('message', 'Vous avez bien activé votre compte');
+
+        return $this->redirectToRoute('home');
     }
 }
