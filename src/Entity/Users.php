@@ -57,6 +57,11 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $messages;
 
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    private $activation_token;
+
     public function __construct()
     {
         $this->discussions = new ArrayCollection();
@@ -212,6 +217,18 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
                 $message->setUserId(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getActivationToken(): ?string
+    {
+        return $this->activation_token;
+    }
+
+    public function setActivationToken(?string $activation_token): self
+    {
+        $this->activation_token = $activation_token;
 
         return $this;
     }

@@ -19,11 +19,12 @@ body{
     background-repeat: no-repeat;
     background-size: cover;
     background-position-x: center;
+    background-color: rgb(54, 54, 54);
     height: 100vh;
 }
 /******************************************Section1********************************************/
                                     /*****Header*****/
-#section_1 header h1{
+header h1{
     font-size: 70px;
 }
 header{
@@ -81,13 +82,13 @@ header .btn::before {
     background-color: rgb(27, 78, 29);
     top: -0.75rem;
     left: 0.5rem;
-    animation: topAnimation 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.25s infinite alternate;
+    animation: topAnimation 2s cubic-bezier(0.68, -0.55, 0.265, 1.45) 0.25s infinite alternate;
 }
 header .btn::after {
     background-color: rgb(97, 192, 100);
     top: 3rem;
     left: 13rem;
-    animation: bottomAnimation 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.5s infinite alternate;
+    animation: bottomAnimation 2s cubic-bezier(0.68, -0.55, 0.265, 1.45) 0.5s infinite alternate;
 }
 header .btn:hover {
     color: rgb(53, 53, 53);
@@ -122,8 +123,8 @@ form label{
     font-size: 20px;
 }
 @media screen and (max-width: 500px){
-    form{
-        width: 70%;
+form{
+    width: 80%;
     }
 }
 form {
@@ -136,9 +137,9 @@ form {
     text-align: center;
     position: relative;
     transition: all 0.2s ease-in-out;
-    width: 50%;
+    width: 60%;
     position: absolute;
-    top: 50%;
+    top: 55%;
     left: 50%;
     transform: translate(-50%,-50%);
 }
@@ -151,15 +152,15 @@ form p {
     margin-bottom: 60px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
-form a {
+form .a {
     text-decoration: none;
     color: rgb(54, 54, 54);
     font-size: 12px;
 }
-form a:hover {
+form .a:hover {
     text-shadow: 2px 2px 6px #000 40;
 }
-form a:active {
+form .a:active {
     text-shadow: none;
 }
 form input {
@@ -241,8 +242,8 @@ form input:active {
 .drop-5 {
     height: 60px;
     width: 60px;
-    bottom: 170px;
-    left: 90px;
+    bottom: 185px;
+    left: 70px;
     z-index: -1;
 }
 .drop-6 {
@@ -251,12 +252,12 @@ form input:active {
     bottom: -60px;
     left: -60px;
 }
-a, input:focus, select:focus, textarea:focus, button:focus {
+.a, input:focus, select:focus, textarea:focus, button:focus {
     outline: none;
 }
 
                                         /*****bouton_form*****/
-a {
+.a {
     color: black;
     padding: 0.7em calc(0.7em * 1.2);
     display: inline-block;
@@ -266,13 +267,13 @@ a {
     cursor: pointer;
     letter-spacing: 0.07em;
 }
-a #btn_form {
+.a #btn_form {
     font-family: proxima-nova, monospace;
     transform: translate3d(0, 0.7em, 0);
     display: block;
     transition: transform 0.4s cubic-bezier(0.2, 0, 0, 1) 0.4s;
 }
-a:after {
+.a:after {
     position: absolute;
     content: "";
     bottom: -3px;
@@ -319,33 +320,33 @@ a:after {
     transition: transform 0.3s cubic-bezier(1, 0, 0.65, 1.01);
     transform-origin: right;
 }
-a:hover #btn_form, a:active #btn_form {
+.a:hover #btn_form, .a:active #btn_form {
     transform: translate3d(0, 0, 0);
     transition: transform 0.6s cubic-bezier(0.2, 0, 0, 1) 0.4s;
 }
-a:hover:after, a:active:after {
+.a:hover:after, .a:active:after {
     transform: scale3d(0, 1, 1);
     right: -3px;
     left: -3px;
     transform-origin: right;
     transition: transform 0.2s cubic-bezier(1, 0, 0.65, 1.01) 0.17s, right 0.2s cubic-bezier(1, 0, 0.65, 1.01), left 0s 0.3s;
 }
-a:hover .line, a:active .line {
+.a:hover .line, .a:active .line {
     transform: scale3d(1, 1, 1);
 }
-a:hover .line.-right, a:active .line.-right {
+.a:hover .line.-right, .a:active .line.-right {
     transition: transform 0.1s cubic-bezier(1, 0, 0.65, 1.01) 0.2s;
     transform-origin: bottom;
 }
-a:hover .line.-top, a:active .line.-top {
+.a:hover .line.-top, .a:active .line.-top {
     transition: transform 0.08s linear 0.4s;
     transform-origin: right;
 }
-a:hover .line.-left, a:active .line.-left {
+.a:hover .line.-left, .a:active .line.-left {
     transition: transform 0.08s linear 0.48s;
     transform-origin: top;
 }
-a:hover .line.-bottom, a:active .line.-bottom {
+.a:hover .line.-bottom, .a:active .line.-bottom {
     transition: transform 0.5s cubic-bezier(0, 0.53, 0.29, 1) 0.56s;
     transform-origin: left;
 }
