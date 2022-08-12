@@ -62,10 +62,16 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $activation_token;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Users::class, inversedBy="amis")
+     */
+    private $amis;
+
     public function __construct()
     {
         $this->discussions = new ArrayCollection();
         $this->messages = new ArrayCollection();
+        $this->amis = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -229,6 +235,30 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     public function setActivationToken(?string $activation_token): self
     {
         $this->activation_token = $activation_token;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getAmis(): Collection
+    {
+        return $this->amis;
+    }
+
+    public function addAmi(self $ami): self
+    {
+        if (!$this->amis->contains($ami)) {
+            $this->amis[] = $ami;
+        }
+
+        return $this;
+    }
+
+    public function removeAmi(self $ami): self
+    {
+        $this->amis->removeElement($ami);
 
         return $this;
     }

@@ -14,6 +14,18 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class DiscussionController extends AbstractController
 {
+    #[Route('/accueil', name: 'accueil')]
+    public function accueil(DiscussionRepository $discussion_repository): Response
+    {
+        $user = $this->getUser();
+
+        return $this->render('accueil.html.twig', [
+            'user' => $user,
+            'discussions' => $user->getDiscussions(),
+            'amis' => $user->getAmis()
+        ]);
+    }
+
     #[Route('/discussion/create/{membre}', name: 'create_discussion')]
     public function startDiscussion(int $membre, DiscussionRepository $discussion_repository, UsersRepository $user_repository, EntityManagerInterface $entityManager): Response
     {
@@ -21,6 +33,7 @@ class DiscussionController extends AbstractController
         $discussion = new Discussion();
         $discussion->addMembre($user_repository->find($user->getId()));
         $discussion->addMembre($user_repository->find($membre));
+        $discussion->setNom($user_repository->find($membre)->getUsername());
         $entityManager->persist($discussion);
         $entityManager->flush();
 
@@ -38,22 +51,9 @@ class DiscussionController extends AbstractController
         }
         $user = $this->getUser();
         $titre = $discussion->getNom();
-        if(!$titre){
-            $titre = '';
-            foreach($discussion->getMembres() as $membre){
-            if ($membre->getId() != $user->getId()){
-                $titre .= $membre->getUsername().' ';
-            }
-        }
-        }
-        $membre2;
-        foreach($discussion->getMembres() as $membre){
-            if ($membre->getId() != $user->getId()){
-                $membre2 = $membre;
-            }
-        }
+        
         return $this->render('discussion/index.html.twig', [
-            'titre' => $titre,
+            'titre' => $discussion->getNom(),
             'membres' => $discussion->getMembres(),
             'messages' => $discussion->getMessages(),
         ]);
