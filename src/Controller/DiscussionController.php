@@ -26,6 +26,22 @@ class DiscussionController extends AbstractController
         ]);
     }
 
+    #[Route('/discussion/clearAll', name: 'dicussion_clearAll')]
+    public function ClearAllDiscussion(DiscussionRepository $discussion_repository): Response
+    {
+        foreach($discussion_repository->findAll() as $discussion){
+            foreach($discussion->getMessages() as $message){
+                $discussion->removeMessage($message);
+            }
+    
+            foreach($discussion->getMembres() as $membre){
+                $discussion->removeMembre($membre);
+            }
+            $discussion_repository->remove($discussion, true);
+        }
+
+        return new Response('Toutes les discussions ont été effacées.');
+    }
     #[Route('/discussion/create/{membre}', name: 'create_discussion')]
     public function startDiscussion(int $membre, DiscussionRepository $discussion_repository, UsersRepository $user_repository, EntityManagerInterface $entityManager): Response
     {
