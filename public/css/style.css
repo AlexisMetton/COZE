@@ -19,11 +19,12 @@ body{
     background-repeat: no-repeat;
     background-size: cover;
     background-position-x: center;
+    background-color: rgb(54, 54, 54);
     height: 100vh;
 }
 /******************************************Section1********************************************/
                                     /*****Header*****/
-#section_1 header h1{
+header h1{
     font-size: 70px;
 }
 header{
@@ -81,13 +82,13 @@ header .btn::before {
     background-color: rgb(27, 78, 29);
     top: -0.75rem;
     left: 0.5rem;
-    animation: topAnimation 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.25s infinite alternate;
+    animation: topAnimation 2s cubic-bezier(0.68, -0.55, 0.265, 1.45) 0.25s infinite alternate;
 }
 header .btn::after {
     background-color: rgb(97, 192, 100);
     top: 3rem;
     left: 13rem;
-    animation: bottomAnimation 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.5s infinite alternate;
+    animation: bottomAnimation 2s cubic-bezier(0.68, -0.55, 0.265, 1.45) 0.5s infinite alternate;
 }
 header .btn:hover {
     color: rgb(53, 53, 53);
@@ -123,7 +124,7 @@ form label{
 }
 @media screen and (max-width: 500px){
 form{
-    width: 70%;
+    width: 80%;
     }
 }
 form {
@@ -136,9 +137,9 @@ form {
     text-align: center;
     position: relative;
     transition: all 0.2s ease-in-out;
-    width: 50%;
+    width: 60%;
     position: absolute;
-    top: 50%;
+    top: 55%;
     left: 50%;
     transform: translate(-50%,-50%);
 }
