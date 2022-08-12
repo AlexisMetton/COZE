@@ -18,7 +18,7 @@
     <body>
         <header>
             <a style="color:black;" href="{{ path('home') }}"><h1>C<span><img src="{{ asset('img/coze.svg') }}" height="48px"></span>ZE</h1></a>
-            <div class="container"><a href="{{ path('home') }}"><button class="btn">CONNEXION</button></a></div>
+            <div class="container"><a href="{{ path('app_login') }}"><button class="btn">CONNEXION</button></a></div>
         </header>
 {% block body %}
     {{ form_start(registrationForm) }}
