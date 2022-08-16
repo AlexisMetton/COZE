@@ -79,7 +79,7 @@
                     <div></div>
                 {% endfor %}
             </div>
-            <img id='deconnection' src='{{ asset('img/se deconnecter.png') }}' alt='deconnection'>
+            <a href="{{ path('app_logout') }}"><img id='deconnection' src='{{ asset('img/se deconnecter.png') }}' alt='deconnection'></a>
         </div>
     </main>
 {% endblock %}
