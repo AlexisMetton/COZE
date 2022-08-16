@@ -85,7 +85,6 @@ class SecurityController extends AbstractController
             $token = $tokenGenerator->generateToken();
 
             try{
-                $user->setResetToken($token);
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($user);
                 $entityManager->flush();
