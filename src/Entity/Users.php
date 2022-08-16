@@ -67,6 +67,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $reset_token;
 
+     /**
      * @ORM\ManyToMany(targetEntity=Users::class, inversedBy="amis")
      */
     private $amis;
@@ -253,6 +254,8 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     public function setResetToken(?string $reset_token): self
     {
         $this->reset_token = $reset_token;
+    }
+
 
     /**
      * @return Collection<int, self>
