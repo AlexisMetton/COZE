@@ -85,6 +85,6 @@ class RegistrationController extends AbstractController
         // On envoie un message flash
         $this->addFlash('message', 'Vous avez bien activé votre compte');
 
-        return $this->redirectToRoute('home');
+        return $this->redirectToRoute('accueil');
     }
 }

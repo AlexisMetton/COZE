@@ -34,6 +34,11 @@ class Message
      */
     private $message;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $date_envoi;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -71,6 +76,18 @@ class Message
     public function setMessage(string $message): self
     {
         $this->message = $message;
+
+        return $this;
+    }
+
+    public function getDateEnvoi(): ?\DateTimeInterface
+    {
+        return $this->date_envoi;
+    }
+
+    public function setDateEnvoi(\DateTimeInterface $date_envoi): self
+    {
+        $this->date_envoi = $date_envoi;
 
         return $this;
     }
