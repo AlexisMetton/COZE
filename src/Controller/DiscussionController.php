@@ -12,7 +12,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class DiscussionController extends AbstractController
 {
-    #[Route('/accueil', name: 'accueil')]
+    /**
+     * @Route("/accueil", name="accueil")
+     */
     public function accueil(DiscussionRepository $discussion_repository): Response
     {
         /** @var \App\Entity\Users $user */
@@ -25,7 +27,9 @@ class DiscussionController extends AbstractController
         ]);
     }
 
-    #[Route('/discussion/clearAll', name: 'dicussion_clearAll')]
+    /**
+     * @Route("/discussion/clearAll", name="dicussion_clearAll")
+     */
     public function ClearAllDiscussion(DiscussionRepository $discussion_repository): Response
     {
         foreach($discussion_repository->findAll() as $discussion){
@@ -41,7 +45,10 @@ class DiscussionController extends AbstractController
 
         return new Response('Toutes les discussions ont été effacées.');
     }
-    #[Route('/discussion/create/{membre}', name: 'create_discussion')]
+
+    /**
+     * @Route("/discussion/create/{membre}", name="create_discussion")
+     */
     public function startDiscussion(int $membre, DiscussionRepository $discussion_repository, UsersRepository $user_repository, EntityManagerInterface $entityManager): Response
     {
         /** @var \App\Entity\Users $user */
@@ -56,7 +63,9 @@ class DiscussionController extends AbstractController
         return $this->redirectToRoute('app_discussion', ['id' => $discussion->getId()]);
     }
 
-    #[Route('/discussion/{id}', name: 'app_discussion')]
+    /**
+     * @Route("/discussion/{id}", name="app_discussion")
+     */
     public function conversation(int $id, DiscussionRepository $discussion_repository): Response
     {
         $discussion = $discussion_repository->find($id);

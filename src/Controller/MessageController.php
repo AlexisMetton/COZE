@@ -15,8 +15,10 @@ use Symfony\Component\HttpFoundation\Request;
 
 class MessageController extends AbstractController
 {
-    #[Route('/message/start/{$membre}', name: 'start_message')]
-    public function StartDiscussion(int $membre, DiscussionRepository $discussion_repository, UsersRepository $user_repository, MessageRepository $message_repository, Request $request, EntityManagerInterface $entityManager): Response
+    /**
+     * @Route("/message/start/{$membre}", name="start_message")
+     */
+    public function StartDiscussion(int $membre, DiscussionRepository $discussion_repository, UsersRepository $user_repository, MessageRepository $message_repository, Request $request, EntityManagerInterface $entityManager)
     {
         /** @var \App\Entity\Users $user */
         $user = $this->getUser();
@@ -38,7 +40,9 @@ class MessageController extends AbstractController
         return $this->redirectToRoute('app_discussion', ['id' => $discussion->getId()]);
     }
 
-    #[Route('/message/envoi/{id}', name: 'send_message')]
+    /**
+     * @Route("/message/envoi/{id}", name="send_message")
+     */
     public function sendMessage(int $id, DiscussionRepository $discussion_repository, UsersRepository $user_repository, MessageRepository $message_repository, Request $request, EntityManagerInterface $entityManager)
     {
         /** @var \App\Entity\Users $user */

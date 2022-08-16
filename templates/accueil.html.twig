@@ -9,7 +9,12 @@
         header h1{font-size : 70px}
         body{background-color:rgb(54,54,54); overflow-x:hidden; width:100vw}
         header a{text-decoration:none;}
-        #rechercher{height:40px; width:40px}
+        #recherche{display: flex;justify-content: center;color: whitesmoke;}
+        #recherche .barre {background: url('{{ asset('img/loupe 1.svg') }}') center no-repeat; background-size: contain;border: none;height: 34px;width: 34px;cursor: pointer;transition: transform 125ms;animation: retrecissement_recherche 625ms;color: transparent;}
+        #recherche .barre:hover {transform: scale(120%);}
+        #recherche .barre:focus {background: none;border: solid 1px rgb(255, 255, 255);height: 21px;width: 380px;color: whitesmoke;cursor: text;transform: scale(100%);animation: elargissement_recherche 500ms;}
+        @keyframes elargissement_recherche {from {width: 0px;} to {width: 380px;}}
+        @keyframes retrecissement_recherche {from {background: none;border: solid 1px rgb(255, 255, 255);width: 380px;height: 21px;} 20% {background: none;border: solid 1px rgb(255, 255, 255);width: 380px;height: 21px;} to {background: none;border: solid 1px rgb(255, 255, 255);width: 0px;height: 21px;}}
         .overlay{height:100vh;background-color:rgb(20,20,20,0); transition-duration:1s;position:absolute;top:0;left:0;z-index:10;max-width:0;width:80vw;}
         #case_menu_lateral:checked ~ label .overlay{display:block; max-width:80vw; background-color:rgba(30,30,30,0.8)}
         #liste_conversations{display:flex;flex-direction:column; width:100vw;padding:5%;align-items:center}
@@ -32,7 +37,9 @@
 
     <header>
         <a style="color:black;" href="{{ path('accueil') }}"><h1>C<span><img src="{{ asset('img/coze.svg') }}" height="48px"></span>ZE</h1></a>
-        <img id='rechercher' src='{{ asset('img/loupe 1.svg') }}' alt='recherche'>
+        <div id="recherche">
+            <input class="barre" type="text" name="text" id="barreSearch">
+        </div>
         <label for='case_menu_lateral'>
             <img class='lien_lateral' src='' alt='lien panneau latéral'>
         </label>
