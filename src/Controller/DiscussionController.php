@@ -66,7 +66,7 @@ class DiscussionController extends AbstractController
     /**
      * @Route("/discussion/{id}", name="app_discussion")
      */
-    public function conversation(int $id, DiscussionRepository $discussion_repository): Response
+    public function conversation(int $id, DiscussionRepository $discussion_repository, UsersRepository $user_repository): Response
     {
         $discussion = $discussion_repository->find($id);
         if(!$discussion){
@@ -82,6 +82,23 @@ class DiscussionController extends AbstractController
             'titre' => $discussion->getNom(),
             'membres' => $discussion->getMembres(),
             'messages' => $discussion->getMessages(),
+            'user_repository' => $user_repository,
         ]);
+    }
+
+    /**
+     * @Route("/discussion/check/{id}", name="check_discussion")
+     */
+    public function checkDiscussion(int $id, UsersRepository $user_repository, DiscussionRepository $discussion_repository)
+    {
+        /** @var \App\Entity\Users $user */
+        $user = $this->getUser();
+        $second_user = $user_repository->find($id);
+        $discussion = $discussion_repository->findOneBy(['nom' => $second_user->getUsername()]);
+        if(!$discussion){
+            return $this->redirectToRoute('create_discussion', ['membre' => $id]);
+        }else{
+            return $this->redirectToRoute('app_discussion', ['id' => $discussion->getId()]);
+        }
     }
 }
