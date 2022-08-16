@@ -244,8 +244,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
-
+    
     public function getResetToken(): ?string
     {
         return $this->reset_token;
@@ -254,6 +253,8 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     public function setResetToken(?string $reset_token): self
     {
         $this->reset_token = $reset_token;
+
+        return $this;
     }
 
 
