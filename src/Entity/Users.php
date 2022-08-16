@@ -63,9 +63,14 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     private $activation_token;
 
     /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    private $reset_token;
+
      * @ORM\ManyToMany(targetEntity=Users::class, inversedBy="amis")
      */
     private $amis;
+
 
     public function __construct()
     {
@@ -239,6 +244,16 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+
+    public function getResetToken(): ?string
+    {
+        return $this->reset_token;
+    }
+
+    public function setResetToken(?string $reset_token): self
+    {
+        $this->reset_token = $reset_token;
+
     /**
      * @return Collection<int, self>
      */
@@ -259,6 +274,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeAmi(self $ami): self
     {
         $this->amis->removeElement($ami);
+
 
         return $this;
     }

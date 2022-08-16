@@ -142,6 +142,7 @@ form {
     top: 55%;
     left: 50%;
     transform: translate(-50%,-50%);
+    max-width: 750px;
 }
 form p {
     font-weight: 500;
@@ -362,3 +363,32 @@ form input:active {
     margin-bottom: 5px;
 }
 
+                                        /******login addflash***********************/
+.success{
+    color:rgb(0, 112, 4)
+}
+
+.warning{
+    color: rgb(153, 99, 0);
+}
+
+.danger{
+    color: rgb(143, 0, 0);
+}
+
+.mdp_oubli{
+    color:whitesmoke;
+    position: absolute;
+    bottom: -10%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.mdp_oubli:hover{
+    color: rgb(84, 153, 86);
+}
+.flash{
+    position: absolute;
+    top: -10%;
+    left: 50%;
+    transform: translateX(-50%);
+}
