@@ -77,6 +77,11 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $notifications;
 
+    /**
+     * @ORM\Column(type="string", length=255, options={"default" : "/img/profil.svg"})
+     */
+    private $photo = "/img/profil.svg";
+
 
     public function __construct()
     {
@@ -312,6 +317,18 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->notifications->removeElement($notification)) {
             $notification->removeUserId($this);
         }
+
+        return $this;
+    }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(string $photo): self
+    {
+        $this->photo = $photo;
 
         return $this;
     }

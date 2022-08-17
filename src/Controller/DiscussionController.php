@@ -7,8 +7,11 @@ use App\Repository\UsersRepository;
 use App\Repository\DiscussionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManagerInterface;
+use PhpParser\Node\Expr\Cast\Array_;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Request;
 
 class DiscussionController extends AbstractController
 {
@@ -65,6 +68,45 @@ class DiscussionController extends AbstractController
     }
 
     /**
+     * @Route("/discussion/check/{id}", name="check_discussion")
+     */
+    public function checkDiscussion(int $id, UsersRepository $user_repository, DiscussionRepository $discussion_repository)
+    {
+        /** @var \App\Entity\Users $user */
+        $user = $this->getUser();
+        $second_user = $user_repository->find($id);
+        $discussion = $discussion_repository->findOneBy(['nom' => $second_user->getUsername()]);
+        if(!$discussion){
+            return $this->redirectToRoute('create_discussion', ['membre' => $id]);
+        }else{
+            return $this->redirectToRoute('app_discussion', ['id' => $discussion->getId()]);
+        }
+    }
+
+    /**
+     * @Route("/discussion/show", name="show_discussion")
+     */
+    public function showDiscussion(Request $request):JsonResponse
+    {
+        /** @var \App\Entity\Users $user */
+        $user = $this->getUser();
+        $discussions = $user->getDiscussions();
+        $start = $request->request->get('start');
+        if(!$start){
+            return new JsonResponse('Erreur lors de la demande ajax');
+        }
+        $idx = 0;
+        for($i = 0; $i < count($discussions);$i++){
+            foreach($discussions[$i] as $key => $value){
+                $jsonData[$idx] = [$key => $value];
+            }
+            $idx++;
+        }
+        return new JsonResponse($jsonData);
+        return new JsonResponse(array_slice(Array($discussions), 3, 3));
+    }
+
+    /**
      * @Route("/discussion/{id}", name="app_discussion")
      */
     public function conversation(int $id, DiscussionRepository $discussion_repository, UsersRepository $user_repository): Response
@@ -85,21 +127,5 @@ class DiscussionController extends AbstractController
             'messages' => $discussion->getMessages(),
             'user_repository' => $user_repository,
         ]);
-    }
-
-    /**
-     * @Route("/discussion/check/{id}", name="check_discussion")
-     */
-    public function checkDiscussion(int $id, UsersRepository $user_repository, DiscussionRepository $discussion_repository)
-    {
-        /** @var \App\Entity\Users $user */
-        $user = $this->getUser();
-        $second_user = $user_repository->find($id);
-        $discussion = $discussion_repository->findOneBy(['nom' => $second_user->getUsername()]);
-        if(!$discussion){
-            return $this->redirectToRoute('create_discussion', ['membre' => $id]);
-        }else{
-            return $this->redirectToRoute('app_discussion', ['id' => $discussion->getId()]);
-        }
     }
 }
