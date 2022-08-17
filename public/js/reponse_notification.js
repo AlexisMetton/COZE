@@ -11,30 +11,49 @@ Object.entries(refus).forEach(entry => {
 });
 
 function confirmer(e){
-    let notification = e.srcElement.parentElement.getAttribute("id").substring(12);
+    let idNotification = e.srcElement.parentElement.getAttribute("id").substring(12);
     $.ajax({
         type:'POST',
         url:'/ami/reponse',
         dataType:'json',
-        data:{notification:notification, reponse:"oui"},
+        data:{notification:idNotification, reponse:"oui"},
         async:true,
         success:function(data){
-            console.log(data);
+            let notification = e.srcElement.parentElement.parentElement;
+            let liste_notification = notification.parentElement;
+            notification.remove();
+            if (liste_notification.children.length == 0){
+                liste_notification.innerHTML = "<p style='text-align:center;'>Aucune notifications</p>";
+            }
+            let amis = document.getElementById('liste_amis');
+            amis.innerHTML = amis.innerHTML.concat('<a href=\'discussion/check/',data['id'],'\' class=\'ami\'><p>',data['username'],'</p></a>');
+            let nb_notification = document.getElementById('nombre_notification');
+            if(nb_notification.innerText == '1'){
+                nb_notification.remove();
+            }else{
+                nb_notification.innerText -= 1;
+            }
         }
     })
 }
 
 function refuser(e){
-    let notification = e.srcElement.parentElement.getAttribute("id").substring(5);
-    console.log(notification);
+    let idNotification = e.srcElement.parentElement.getAttribute("id").substring(5);
+    console.log(idNotification);
     $.ajax({
         type:'POST',
         url:'/ami/reponse',
         dataType:'json',
-        data:{notification:notification, reponse:"non"},
+        data:{notification:idNotification, reponse:"non"},
         async:true,
         success:function(data){
             console.log(data);
+            let notification = e.srcElement.parentElement.parentElement;
+            let liste_notification = notification.parentElement;
+            notification.remove();
+            if (liste_notification.children.length == 0){
+                liste_notification.innerHTML = "<p style='text-align:center;'>Aucune notifications</p>";
+            }
         }
     })
 }
