@@ -24,7 +24,7 @@ class DiscussionController extends AbstractController
             'user' => $user,
             'discussions' => $user->getDiscussions(),
             'amis' => $user->getAmis(), 
-            'notifications' => $user->getNotifications(),
+            'notifications' => $user->getNotifications()
         ]);
     }
 

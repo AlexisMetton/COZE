@@ -65,7 +65,7 @@
                 {% else %}
                     {% for notification in notifications %}
                         {% if notification.getUrl() is empty %}
-                            <div class='notification'>
+                            <div class='notification' id="info_accepter">
                         {% else %}
                             <a class='notification'>
                         {% endif %}
