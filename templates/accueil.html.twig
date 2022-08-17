@@ -24,6 +24,7 @@
         #liste_notification{position:absolute;top:100%;max-height:0px;border:0; height:fit-content;min-width:400px;overflow:hidden;background-color:rgb(90,90,90); transition-duration:0.5s; right:calc(100% - 50px);}
         .notification{display:grid; grid-template-columns : 1fr 2fr 2fr; align-items: center;justify-items: center;}
         .logo_notification{grid-column:1/2; grid-row:1/3; height:50px; width : 50px; border-radius:50%;}
+        #nombre_notification{background-color:red; padding:5px; border-radius:50%;color:white; position:absolute; top:0; left:calc(100% - 20px); width:10px; height:10px; box-sizing:content-box; font-size:10px; text-align:center;}
         #case_menu_notification{display:none}
         #case_menu_notification:checked ~ #liste_notification{max-height:500px; border:3px ridge rgb(70,70,70) ;padding:20px; }
         #lien_lateral{height:70px;width:70px;border-radius:50%;background-color:#549956; position:relative; left:60%;}
@@ -55,8 +56,11 @@
             <input class="barre" type="text" name="text" id="barreSearch">
         </div>
         <div id='header_end'>
-            <label for='case_menu_notification'>
+            <label for='case_menu_notification' style='position:relative;'>
                 <img id='lien_notification' src="{{ asset('img/cloche COZE.svg') }}" alt='lien vers les notifications'>
+                {% if not notifications is empty %}
+                    <p id='nombre_notification'>{{notifications | length}}</p>
+                {% endif %}
             </label>
             <input type='checkbox' id='case_menu_notification'>
             <div id='liste_notification'>

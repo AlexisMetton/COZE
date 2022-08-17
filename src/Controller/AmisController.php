@@ -47,15 +47,17 @@ class AmisController extends AbstractController
         if($idNotification){
             $reponse = $request->request->get('reponse');
             $notification = $notification_repository->find($idNotification);
+            $jsonData = '';
             if($reponse == 'oui'){
                 $amiUsername = explode(' ', $notification->getMessage())[0];
                 $ami = $user_repository->findOneBy(['username' => $amiUsername]);
                 $user->addAmi($ami);
                 $entityManager->persist($user);
                 $entityManager->flush();
+                $jsonData = ['id' => $ami->getId(), 'username' => $ami->getUsername()];
             }
             $notification_repository->remove($notification, true);
-            return new JsonResponse('Notification supprimée.');
+            return new JsonResponse($jsonData);
         }else{
             return new JsonResponse('Erreur envoi donnée ajax.');
         }
