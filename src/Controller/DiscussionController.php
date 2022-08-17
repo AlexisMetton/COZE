@@ -15,7 +15,7 @@ class DiscussionController extends AbstractController
     /**
      * @Route("/accueil", name="accueil")
      */
-    public function accueil(DiscussionRepository $discussion_repository): Response
+    public function accueil(): Response
     {
         /** @var \App\Entity\Users $user */
         $user = $this->getUser();

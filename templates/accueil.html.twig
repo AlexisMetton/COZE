@@ -1,17 +1,9 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}COZE - Accueil{% endblock %}</title>
-        <link rel="icon" href="{{ asset('img/coze.svg') }}">
-        {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-        {% endblock %}
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-        {% endblock %}
-    </head>
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="{{ asset('js/reponse_notification.js') }}" defer></script>
+{% endblock %}
 
 {% block body %}
     <style>
@@ -64,7 +56,7 @@
         </div>
         <div id='header_end'>
             <label for='case_menu_notification'>
-                <img id='lien_notification' src='{{ asset('img/cloche COZE.svg') }}' alt='lien vers les notifications'>
+                <img id='lien_notification' src="{{ asset('img/cloche COZE.svg') }}" alt='lien vers les notifications'>
             </label>
             <input type='checkbox' id='case_menu_notification'>
             <div id='liste_notification'>
@@ -80,8 +72,8 @@
                             <img class='logo_notification' src="{{asset(notification.getLogo())}}" alt='logo de notification'>
                             {% if notification.getType() is same as("confirmation") %}
                                 <p style="grid-column: 2/4;grid-row: 1/2;padding: 10px;text-align: center;color: rgb(230,230,230);">{{notification.getMessage()}}</p>
-                                <button style="grid-column:2/3; grid-row:2/3; justify-self: end;background-color:transparent;border:none;margin-right:5px;cursor:pointer;" id="{{ 'confirmation' ~ notification.getId() }}"><img src="{{asset('img/valider.png')}}" height="20px"></button> 
-                                <button style="grid-column:3/4; grid-row:2/3; justify-self: baseline;background-color:transparent;border:none;margin-left:5px;cursor:pointer;" id="{{ 'refus' ~ notification.getId() }}"><img src="{{asset('img/refuser.png')}}" height="20px"></button>
+                                <button style="grid-column:2/3; grid-row:2/3; justify-self: end;background-color:transparent;border:none;margin-right:5px;cursor:pointer;" id="{{ 'confirmation' ~ notification.getId() }}" class="confirmation"><img src="{{asset('img/valider.png')}}" height="20px"></button> 
+                                <button style="grid-column:3/4; grid-row:2/3; justify-self: baseline;background-color:transparent;border:none;margin-left:5px;cursor:pointer;" id="{{ 'refus' ~ notification.getId() }}" class="refus"><img src="{{asset('img/refuser.png')}}" height="20px"></button>
                             {% else %}
                                 <p style="grid-column:2/4; grid-row:1/3">{{notification.getMessage()}}</p>
                             {% endif %}
