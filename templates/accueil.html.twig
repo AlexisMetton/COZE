@@ -19,6 +19,8 @@
         #lien_notification{height:40px; width:40px;transition-duration:0.5s; cursor:pointer}
         #lien_notification:hover{transform: scale(120%)}
         #liste_notification{position:absolute;top:100%;max-height:0px;border:0; height:fit-content;min-width:400px;overflow:hidden;background-color:rgb(90,90,90); transition-duration:0.5s; right:calc(100% - 50px);}
+        .notification{display:grid; grid-template-columns : 1fr 2fr 2fr; align-items: center;justify-items: center;}
+        .logo_notification{grid-column:1/2; grid-row:1/3; height:50px; width : 50px; border-radius:50%;}
         #case_menu_notification{display:none}
         #case_menu_notification:checked ~ #liste_notification{max-height:500px; border:3px ridge rgb(70,70,70) ;padding:20px; }
         #lien_lateral{height:70px;width:70px;border-radius:50%;background-color:#549956; position:relative; left:60%;}
@@ -54,7 +56,32 @@
                 <img id='lien_notification' src='{{ asset('img/cloche COZE.svg') }}' alt='lien vers les notifications'>
             </label>
             <input type='checkbox' id='case_menu_notification'>
-            <div id='liste_notification'><p style='text-align:center;'>Aucune notifications</p></div>
+            <div id='liste_notification'>
+                {% if notifications is empty %}
+                    <p style='text-align:center;'>Aucune notifications</p>
+                {% else %}
+                    {% for notification in notifications %}
+                        {% if notification.getUrl() is empty %}
+                            <div class='notification'>
+                        {% else %}
+                            <a class='notification'>
+                        {% endif %}
+                            <img class='logo_notification' src="{{asset(notification.getLogo())}}" alt='logo de notification'>
+                            {% if notification.getType() is same as("confirmation") %}
+                                <p style="grid-column: 2/4;grid-row: 1/2;padding: 10px;text-align: center;color: rgb(230,230,230);">{{notification.getMessage()}}</p>
+                                <button style="grid-column:2/3; grid-row:2/3; justify-self: end;" id="{{ 'confirmation' ~ notification.getId() }}">Confirmer</button> 
+                                <button style="grid-column:3/4; grid-row:2/3; justify-self: baseline;" id="{{ 'refus' ~ notification.getId() }}">Refuser</button>
+                            {% else %}
+                                <p style="grid-column:2/4; grid-row:1/3">{{notification.getMessage()}}</p>
+                            {% endif %}
+                        {% if notification.getUrl() is empty %}
+                            </div>
+                        {% else %}
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
             <label for='case_menu_lateral'>
                 <div id='lien_lateral'></div>
                 {# <img class='lien_lateral' src='' alt='lien panneau latéral'> #}

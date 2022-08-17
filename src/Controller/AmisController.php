@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Notification;
 use App\Repository\UsersRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,7 +22,14 @@ class AmisController extends AbstractController
         $user->addAmi($ami);
         $entityManager->persist($user);
         $entityManager->flush();
-
+        $notification = new Notification();
+        $notification->setType("confirmation");
+        $notification->setMessage($ami->getUsername().' vous à ajouter en ami. Souhaitez-vous accepter l\'invitation ?');
+        $entityManager->persist($notification);
+        $entityManager->flush();
+        $ami->addNotification($notification);
+        $entityManager->persist($ami);
+        $entityManager->flush();
         return new Response($ami->getUsername()." a été ajouté(e) dans les amis.");
     }
 }

@@ -23,7 +23,8 @@ class DiscussionController extends AbstractController
         return $this->render('accueil.html.twig', [
             'user' => $user,
             'discussions' => $user->getDiscussions(),
-            'amis' => $user->getAmis()
+            'amis' => $user->getAmis(), 
+            'notifications' => $user->getNotifications(),
         ]);
     }
 

@@ -72,12 +72,18 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $amis;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Notification::class, mappedBy="user_id")
+     */
+    private $notifications;
+
 
     public function __construct()
     {
         $this->discussions = new ArrayCollection();
         $this->messages = new ArrayCollection();
         $this->amis = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -279,6 +285,33 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->amis->removeElement($ami);
 
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Notification>
+     */
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
+    }
+
+    public function addNotification(Notification $notification): self
+    {
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications[] = $notification;
+            $notification->addUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotification(Notification $notification): self
+    {
+        if ($this->notifications->removeElement($notification)) {
+            $notification->removeUserId($this);
+        }
 
         return $this;
     }
