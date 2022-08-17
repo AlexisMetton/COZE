@@ -78,4 +78,10 @@ function notifier(e){
             console.log(data);
         }
     })
+    let nb_notification = document.getElementById('nombre_notification');
+        if(nb_notification.innerText == '1'){
+            nb_notification.remove();
+        }else{
+            nb_notification.innerText -= 1;
+        }
 }
