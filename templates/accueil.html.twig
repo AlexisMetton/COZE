@@ -1,6 +1,17 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Accueil{% endblock %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}COZE - Accueil{% endblock %}</title>
+        <link rel="icon" href="{{ asset('img/coze.svg') }}">
+        {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
+        {% endblock %}
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
+    </head>
 
 {% block body %}
     <style>
@@ -69,8 +80,8 @@
                             <img class='logo_notification' src="{{asset(notification.getLogo())}}" alt='logo de notification'>
                             {% if notification.getType() is same as("confirmation") %}
                                 <p style="grid-column: 2/4;grid-row: 1/2;padding: 10px;text-align: center;color: rgb(230,230,230);">{{notification.getMessage()}}</p>
-                                <button style="grid-column:2/3; grid-row:2/3; justify-self: end;" id="{{ 'confirmation' ~ notification.getId() }}">Confirmer</button> 
-                                <button style="grid-column:3/4; grid-row:2/3; justify-self: baseline;" id="{{ 'refus' ~ notification.getId() }}">Refuser</button>
+                                <button style="grid-column:2/3; grid-row:2/3; justify-self: end;background-color:transparent;border:none;margin-right:5px;cursor:pointer;" id="{{ 'confirmation' ~ notification.getId() }}"><img src="{{asset('img/valider.png')}}" height="20px"></button> 
+                                <button style="grid-column:3/4; grid-row:2/3; justify-self: baseline;background-color:transparent;border:none;margin-left:5px;cursor:pointer;" id="{{ 'refus' ~ notification.getId() }}"><img src="{{asset('img/refuser.png')}}" height="20px"></button>
                             {% else %}
                                 <p style="grid-column:2/4; grid-row:1/3">{{notification.getMessage()}}</p>
                             {% endif %}
@@ -125,7 +136,7 @@
                     </a>
                 {% endfor %}
             </div>
-            <img id='deconnection' src='{{ asset('img/se deconnecter.png') }}' alt='deconnection'>
+            <a href="{{ path('app_logout') }}"><img id='deconnection' src='{{ asset('img/se deconnecter.png') }}' alt='deconnection'></a>
         </div>
     </main>
 {% endblock %}

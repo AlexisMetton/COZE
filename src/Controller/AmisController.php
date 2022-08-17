@@ -24,7 +24,7 @@ class AmisController extends AbstractController
         $entityManager->flush();
         $notification = new Notification();
         $notification->setType("confirmation");
-        $notification->setMessage($ami->getUsername().' vous à ajouter en ami. Souhaitez-vous accepter l\'invitation ?');
+        $notification->setMessage($user->getUsername().' vous a ajouté(e) en ami. Souhaitez-vous accepter l\'invitation ?');
         $entityManager->persist($notification);
         $entityManager->flush();
         $ami->addNotification($notification);
