@@ -268,6 +268,9 @@ form input:active {
     cursor: pointer;
     letter-spacing: 0.07em;
 }
+.a button{
+    cursor: pointer;
+}
 .a #btn_form {
     font-family: proxima-nova, monospace;
     transform: translate3d(0, 0.7em, 0);
