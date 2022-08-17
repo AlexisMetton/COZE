@@ -70,4 +70,17 @@ class AmisController extends AbstractController
             return new JsonResponse('Erreur envoi donnée ajax.');
         }
     }
+
+    /**
+     * @Route("/notification/supprimée", name="notification_supprimée")
+     */
+    public function notification_Suppression(Request $request, NotificationRepository $notification_repository):JsonResponse
+    {
+        $id = $request->request->get('id');
+        if($id){
+            $supp_Notif = $notification_repository->find($id);
+            $notification_repository->remove($supp_Notif, true);
+            return new JsonResponse('Notification supprimée');
+        }
+    }
 }
