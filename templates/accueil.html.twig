@@ -52,6 +52,17 @@
         .photo_amis{width:30px; height:30px; margin-right:10px}
         .ami{display:flex; justify-content:center;padding : 10px;cursor:pointer; color:rgb(120,120,120); align-items:center}
         #deconnection{height:50px;width:50px; margin : 20px 0}
+        @media  screen and (max-width:666px) {
+            #menu_lateral{width:30vw;}
+            #case_menu_lateral:checked ~ #menu_lateral{left:70%;}
+        }
+        @media  screen and (max-width:430px) {
+            #menu_lateral{width:40vw;}
+            #case_menu_lateral:checked ~ #menu_lateral{left:60%;}
+        }
+        @media  screen and (max-width:900px) {
+            #recherche{position:relative;margin-top:-50px;margin-bottom:50px;}
+        }
     </style>
 
     <header>
