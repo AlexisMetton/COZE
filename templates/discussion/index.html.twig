@@ -2,6 +2,11 @@
 
 {% block title %}{{titre}}{% endblock %}
 
+{% block javascripts %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="{{ asset('js/envoyer_message.js') }}" defer></script>
+{% endblock %}
+
 {% block body %}
     <style>
         *{padding:0;margin:0;box-sizing:border-box; text-decoration:none;}
@@ -10,17 +15,18 @@
         #titre{flex-grow:1; color:rgb(150,150,150); text-align:center; font-size:40px}
         body{background-color:rgb(54,54,54); overflow-x:hidden; width:100vw; position:relative}
         #liste_message{display:flex;flex-direction:column; width:100vw;padding:5%;}
-        .message{display:grid; align-items:center; grid-template-columns: 1fr 4fr 2fr; grid-auto-rows: 50px;margin-bottom:20px;width:clamp(500px, 100%, 800px);color:white}
-        .nom_user{grid-column:1/3;grid-row:1/2; padding : 0 5%;}
-        .message_info{ grid-column:1/3; grid-row:2/3; background-color:#549956; border-radius:65px;}
+        .message{display:grid; align-items:center; grid-template-columns: 1fr 4fr 2fr; margin-bottom:20px;width:clamp(500px, 100%, 800px);color:white}
+        .nom_user{grid-column:1/3;grid-row:1/2; padding : 0 5%; justify-self:center}
+        .message_info{ grid-column:1/3; grid-row:2/3; background-color:#549956; border-radius:65px;display:flex}
         .photo_user_conteneur{background-color:rgb(200,200,200); border-radius:50%; overflow:hidden; height: 100px; width : 100px; display:flex; justify-content:center; align-items:center;}
         .photo_user{width:95px; height:95px}
-        .dernier_message{padding : 0 10%;}
-        .date_dernier_message{grid-column:3/4;grid-row:2/3; padding : 0 10%;}
+        .message_contenu{align-self:center; flex-grow:1;; padding:5%}
+        .date_message{grid-column:3/4;grid-row:2/3; padding : 0 10%;}
         #zone_input{width:100vw; padding : 0 10%; height:10vh; position:fixed;top:90vh;display:flex;justify-content:center; align-items:center}
         #ajout_fichier{border-radius:50%; background-color:rgb(180,180,180);width:70px; height:70px;}
         #creer_son_image_video{border-radius:50%;margin: 0 20px; background-color:rgb(180,180,180);width:70px; height:70px;}
-        #input_utilisateur{height:70px; background-color:rgb(180,180,180); border-radius:50px;width:clamp(200px, 60%, 800px)}
+        #input_utilisateur{height:70px; background-color:rgb(180,180,180); border-radius:50px;width:clamp(200px, 60%, 800px); display:flex;justify-content:center; align-items:center; position:relative;}
+        #envoyer_message{width:100%; height:100%; background:rgba(0,0,0,0); border:none; padding:5%}
         #ajout_emote{border-radius:50%;margin: 0 20px; background-color:rgb(180,180,180);width:70px; height:70px;}
         #plus_d_options{border-radius:50%; background-color:rgb(180,180,180);width:70px; height:70px;}
     </style>
@@ -41,7 +47,7 @@
                         </div>
                         <p class='message_contenu'>{{ message.getMessage() }}</p>
                     </div>
-                    <p class='date_message'>{{ message.getDateEnvoie() | date("d/m/Y")}}
+                    <p class='date_message'>{{ message.getDateEnvoi() | date("d/m/Y")}}
                 </div>
             {% endfor %}
         </div>
@@ -49,7 +55,9 @@
         <div id='zone_input'>
             <div id='ajout_fichier'></div>
             <div id='creer_son_image_video'></div>
-            <div id='input_utilisateur'></div>
+            <div id='input_utilisateur'>
+                <input type='text' id='envoyer_message'>
+            </div>
             <div id='ajout_emote'></div>
             <div id='plus_d_options'></div>
         </div>
