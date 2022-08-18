@@ -3,6 +3,7 @@
 {% block javascripts %}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="{{ asset('js/reponse_notification.js') }}" defer></script>
+    <script src="{{ asset('js/affichage_discussion.js') }}" defer></script>
 {% endblock %}
 
 {% block body %}
@@ -48,19 +49,9 @@
         #photo_user{width:clamp(30px, 100%, 100px);margin-top:20px;}
         #titre_lateral{color:rgb(120,120,120);margin-bottom :10px }
         #liste_amis{flex-grow:1; color:rgb(120,120,120)}
-        .ami{display:flex; justify-content:center;padding : 10px;cursor:pointer; color:rgb(120,120,120); text-decoration:none;}
-        #deconnection{height:50px;width:50px; margin : 20px 0;}
-        @media  screen and (max-width:666px) {
-            #menu_lateral{width:30vw;}
-            #case_menu_lateral:checked ~ #menu_lateral{left:70%;}
-        }
-        @media  screen and (max-width:430px) {
-            #menu_lateral{width:40vw;}
-            #case_menu_lateral:checked ~ #menu_lateral{left:60%;}
-        }
-        @media  screen and (max-width:900px) {
-            #recherche{position:relative;margin-top:-50px;margin-bottom:50px;}
-        }
+        .photo_amis{width:30px; height:30px; margin-right:10px}
+        .ami{display:flex; justify-content:center;padding : 10px;cursor:pointer; color:rgb(120,120,120); align-items:center}
+        #deconnection{height:50px;width:50px; margin : 20px 0}
     </style>
 
     <header>
@@ -118,7 +109,7 @@
             {% for discussion in discussions | slice(0,3) %}
                 <a href="{{ 'discussion/' ~ discussion.getId()}}"class='discussion'>
                     <div class='photo_discussion_conteneur'>
-                        <img class='photo_discussion' src='{{ asset('img/profil.svg') }}' alt='photo_discussion'>
+                        <img class='photo_discussion' src='{{ asset(discussion.getPhoto()) }}' alt='photo_discussion'>
                     </div>
                     <h3 class='nom_discussion'>{{ discussion.getNom() }}</h3>
                     {% if not discussion.getMessages() is empty %}
@@ -135,16 +126,13 @@
         </div>
 
         <div id='menu_lateral'>
-            <label for='case_menu_lateral'>
-                <div id='lien_lateral'></div>
-                {# <img class='lien_lateral' src='' alt='lien panneau latéral'> #}
-            </label>
-            <img id='photo_user' src='{{ asset('img/profil.svg') }}' alt='photo_user'>
+            <img id='photo_user' src='{{ asset(user.getPhoto()) }}' alt='photo_user'>
             <div class='barre_horizontale_lateral'></div>
             <h3 id='titre_lateral'>Amis&nbsp;-&nbsp;{{ amis | length}}</h3>
             <div id='liste_amis'>
                 {% for ami in amis %}
                     <a href="{{'discussion/check/' ~ ami.getId()}}" class='ami'>
+                        <img class='photo_amis' src="{{asset(ami.getPhoto())}}" alt='photo de {{ami.getUsername()}}'>
                         <p>{{ami.getUsername()}}</p>
                     </a>
                 {% endfor %}
