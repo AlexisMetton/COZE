@@ -137,6 +137,10 @@
         </div>
 
         <div id='menu_lateral'>
+            <label for='case_menu_lateral'>
+                <div id='lien_lateral'></div>
+                {# <img class='lien_lateral' src='' alt='lien panneau latéral'> #}
+            </label>
             <img id='photo_user' src='{{ asset(user.getPhoto()) }}' alt='photo_user'>
             <div class='barre_horizontale_lateral'></div>
             <h3 id='titre_lateral'>Amis&nbsp;-&nbsp;{{ amis | length}}</h3>
