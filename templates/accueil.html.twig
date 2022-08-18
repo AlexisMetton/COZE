@@ -112,7 +112,7 @@
                     <h3 class='nom_discussion'>{{ discussion.getNom() }}</h3>
                     {% if not discussion.getMessages() is empty %}
                         <p class='dernier_message'>{{ (discussion.getMessages() | last).getMessage() }}</p>
-                        <p class='date_dernier_message'>{{ (discussion.getMessages() | last).getDateEnvoie() | date("d/m/Y")}}
+                        <p class='date_dernier_message'>{{ (discussion.getMessages() | last).getDateEnvoi() | date("d/m/Y")}}</p>
                     {% endif %}
                 </a>
             {% endfor %}
