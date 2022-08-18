@@ -97,13 +97,16 @@ class DiscussionController extends AbstractController
         }
         $idx = 0;
         for($i = 0; $i < count($discussions);$i++){
-            foreach($discussions[$i] as $key => $value){
-                $jsonData[$idx] = [$key => $value];
+            if(count($discussions[$i] -> getMessages()) == 0){
+                $message = '';
+                $heure_message = '';
+            }else{
+                $message = $discussions[$i]->getMessages()[count($discussions[$i]->getMessages()) - 1]->getMessage();
+                $heure_message = $discussions[$i]->getMessages()[count($discussions[$i]->getMessages()) - 1]->getDateEnvoi();
             }
-            $idx++;
+            $jsonData[$idx++] = ['id' => $discussions[$i] -> getId(), 'nom' => $discussions[$i]->getNom(), 'photo' => $discussions[$i]->getPhoto(), 'message' => $message, 'date_envoi' => $heure_message];
         }
         return new JsonResponse($jsonData);
-        return new JsonResponse(array_slice(Array($discussions), 3, 3));
     }
 
     /**
