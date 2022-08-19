@@ -52,6 +52,7 @@
         .photo_amis{height:65px; margin-right:10px}
         .ami{display:flex; justify-content:center;padding : 10px;cursor:pointer; color:rgb(120,120,120); align-items:center}
         #deconnection{height:50px;width:50px; margin : 20px 0}
+        #lienmodif{width: clamp(30px, 100%, 100px);margin-top: 20px;}
         @media  screen and (max-width:666px) {
             #menu_lateral{width:30vw;}
             #case_menu_lateral:checked ~ #menu_lateral{left:70%;}
@@ -144,8 +145,8 @@
                 <div id='lien_lateral'></div>
                 {# <img class='lien_lateral' src='' alt='lien panneau latéral'> #}
             </label>
-            <img id='photo_user' src='{{ asset(user.getPhoto()) }}' alt='photo_user'>
-            <label for="id_input" id="label_input"><img src="{{ asset('img/plus.png') }}" height="20px"><input type="file" id="id_input"></label>
+            <a id="lienmodif"><img id='photo_user' src='{{ asset(user.getPhoto()) }}' alt='photo_user'></a>
+            <!--<label for="id_input" id="label_input"><img src="{{ asset('img/plus.png') }}" height="20px"><input type="file" id="id_input"></label>-->
             <div class='barre_horizontale_lateral'></div>
             <h3 id='titre_lateral'>Amis&nbsp;-&nbsp;{{ amis | length}}</h3>
             <div id='liste_amis'>
