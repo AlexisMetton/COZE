@@ -63,15 +63,32 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     private $activation_token;
 
     /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    private $reset_token;
+
+     /**
      * @ORM\ManyToMany(targetEntity=Users::class, inversedBy="amis")
      */
     private $amis;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Notification::class, mappedBy="user_id")
+     */
+    private $notifications;
+
+    /**
+     * @ORM\Column(type="string", length=255, options={"default" : "/img/profil.svg"})
+     */
+    private $photo = "/img/profil.svg";
+
 
     public function __construct()
     {
         $this->discussions = new ArrayCollection();
         $this->messages = new ArrayCollection();
         $this->amis = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -238,6 +255,19 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+    
+    public function getResetToken(): ?string
+    {
+        return $this->reset_token;
+    }
+
+    public function setResetToken(?string $reset_token): self
+    {
+        $this->reset_token = $reset_token;
+
+        return $this;
+    }
+
 
     /**
      * @return Collection<int, self>
@@ -259,6 +289,46 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeAmi(self $ami): self
     {
         $this->amis->removeElement($ami);
+
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Notification>
+     */
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
+    }
+
+    public function addNotification(Notification $notification): self
+    {
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications[] = $notification;
+            $notification->addUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotification(Notification $notification): self
+    {
+        if ($this->notifications->removeElement($notification)) {
+            $notification->removeUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(string $photo): self
+    {
+        $this->photo = $photo;
 
         return $this;
     }

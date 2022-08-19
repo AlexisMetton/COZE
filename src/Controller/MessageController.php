@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class MessageController extends AbstractController
 {
@@ -41,23 +42,29 @@ class MessageController extends AbstractController
     }
 
     /**
-     * @Route("/message/envoi/{id}", name="send_message")
+     * @Route("/message/envoi", name="send_message")
      */
-    public function sendMessage(int $id, DiscussionRepository $discussion_repository, UsersRepository $user_repository, MessageRepository $message_repository, Request $request, EntityManagerInterface $entityManager)
+    public function sendMessage(DiscussionRepository $discussion_repository, UsersRepository $user_repository, MessageRepository $message_repository, Request $request, EntityManagerInterface $entityManager):JsonResponse
     {
         /** @var \App\Entity\Users $user */
+        
         $user = $this->getUser();
-        $discussion = $discussion_repository->find($id);
+        $idDiscussion = $request->request->get('id');
+        if(!$idDiscussion){
+            return new JsonResponse('Erreur à la demande Ajax');
+        }
+        $discussion = $discussion_repository->find($idDiscussion);
         $message = new Message();
         $message->setUserId($user);
         $message->setDiscussionId($discussion);
         $message->setMessage($request->request->get('message'));
+        $message->setDateEnvoi(new \DateTime());
         $entityManager->persist($message);
         $entityManager->flush();
         $discussion->addMessage($message);    
         $entityManager->persist($discussion);
         $entityManager->flush();
         
-        return json_encode('Message envoyé avec succès');
+        return new JsonResponse('Message envoyé avec succès');
     }
 }

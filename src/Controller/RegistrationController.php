@@ -6,9 +6,11 @@ use App\Entity\Users;
 use App\Form\RegistrationFormType;
 use App\Repository\UsersRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -17,7 +19,7 @@ class RegistrationController extends AbstractController
     /**
      * @Route("/register", name="app_register")
      */
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
     {
         $user = new Users();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -38,6 +40,21 @@ class RegistrationController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
             // do anything else you need here, like send an email
+
+            $email = (new TemplatedEmail())
+                ->from('alexis.metton@gmail.com')
+                ->to($user->getEmail())
+                ->subject('Activation de votre compte')
+
+                ->htmlTemplate('emails/activation.html.twig')
+
+                ->context([
+                    'token' => $user->getActivationToken(),
+                    'expiration_date' => new \DateTime('+7 days'),
+                    'username' => 'foo',
+                ]);
+            
+            $mailer->send($email);
 
             return $this->redirectToRoute('home');
         }
@@ -68,6 +85,6 @@ class RegistrationController extends AbstractController
         // On envoie un message flash
         $this->addFlash('message', 'Vous avez bien activé votre compte');
 
-        return $this->redirectToRoute('accueil');
+        return $this->redirectToRoute('app_login');
     }
 }

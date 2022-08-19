@@ -34,6 +34,11 @@ class Discussion
      */
     private $nom;
 
+    /**
+     * @ORM\Column(type="string", length=255, options={"default" : "/img/profil.svg"})
+     */
+    private $photo = "/img/profil.svg";
+
     public function __construct()
     {
         $this->membres = new ArrayCollection();
@@ -107,6 +112,18 @@ class Discussion
     public function setNom(?string $nom): self
     {
         $this->nom = $nom;
+
+        return $this;
+    }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(string $photo): self
+    {
+        $this->photo = $photo;
 
         return $this;
     }
