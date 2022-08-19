@@ -27,7 +27,7 @@
         .notification{display:grid; grid-template-columns : 1fr 2fr 2fr; align-items: center;justify-items: center;padding:10px 5px 10px 5px;cursor:pointer;}
         .notification:hover{transform:scale(1.05);}
         .logo_notification{grid-column:1/2; grid-row:1/3; height:50px; width : 50px; border-radius:50%;}
-        #nombre_notification{background-color:red; padding:5px; border-radius:50%;color:white; position:absolute; top:0; left:calc(100% - 20px); width:10px; height:10px; box-sizing:content-box; font-size:10px; text-align:center;}
+        #nombre_notification{background-color:red; padding:5px; border-radius:50%;color:white; position:absolute; top:0; width:10px; height:10px; box-sizing:content-box; font-size:10px; text-align:center;}
         #case_menu_notification{display:none}
         #case_menu_notification:checked ~ #liste_notification{max-height:500px; border:3px ridge rgb(70,70,70) ;padding:20px; }
         #lien_lateral{height:60px;width:60px;border-radius:50%;background-color:#549956; position:absolute; left:-30px;top:8px;}
@@ -49,7 +49,7 @@
         #photo_user{width:clamp(30px, 100%, 100px);margin-top:20px;}
         #titre_lateral{color:rgb(120,120,120);margin-bottom :10px }
         #liste_amis{flex-grow:1; color:rgb(120,120,120)}
-        .photo_amis{width:30px; height:30px; margin-right:10px}
+        .photo_amis{height:30px; margin-right:10px}
         .ami{display:flex; justify-content:center;padding : 10px;cursor:pointer; color:rgb(120,120,120); align-items:center}
         #deconnection{height:50px;width:50px; margin : 20px 0}
         @media  screen and (max-width:666px) {
