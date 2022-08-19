@@ -9,7 +9,8 @@
         header h1{font-size : 70px}
         body{background-color:rgb(54,54,54); overflow-x:hidden; width:100vw}
         header a{text-decoration:none;}
-        #recherche{display: flex;justify-content: center;color: whitesmoke;}
+        #recherche{display: flex; flex-direction: column;justify-content: center;color: whitesmoke;margin-top: 20px}
+        .barre{display:block;}
         #recherche .barre {background: url('{{ asset('img/loupe 1.svg') }}') center no-repeat; background-size: contain;border: none;height: 34px;width: 34px;cursor: pointer;transition: transform 125ms;animation: retrecissement_recherche 625ms;color: transparent;}
         #recherche .barre:hover {transform: scale(120%);}
         #recherche .barre:focus {background: none;border: solid 1px rgb(255, 255, 255);height: 21px;width: 380px;color: whitesmoke;cursor: text;transform: scale(100%);animation: elargissement_recherche 500ms;}
@@ -33,19 +34,27 @@
         #photo_user{width:clamp(30px, 100%, 100px);margin-top:20px;}
         #liste_amis{flex-grow:1}
         #deconnection{height:50px;width:50px; margin : 20px 0}
+        #resultats{display:flex; align-items: center;flex-direction: column;justify-content: center}
+        .user{width:20%;display:flex; flex-direction:row-reverse;align-items: center;justify-content: space-between; margin-top: 20px; background-color:#549956; border-radius:30px;}
+        .aucun{width:20%;display:flex; flex-direction:row-reverse;align-items: center;justify-content: center; margin-top: 20px; background-color:#549956; border-radius:30px;}
+        .photo{width:50px;}
     </style>
+  
 
     <header>
         <a style="color:black;" href="{{ path('accueil') }}"><h1>C<span><img src="{{ asset('img/coze.svg') }}" height="48px"></span>ZE</h1></a>
         <div id="recherche">
-            <input class="barre" type="text" name="text" id="barreSearch">
+            <input class="barre" type="text" name="text" id="barreSearch" value="">
+           
         </div>
+       
         <label for='case_menu_lateral'>
             <img class='lien_lateral' src='' alt='lien panneau latéral'>
         </label>
     </header>
 
     <main>
+      <div id="resultats"></div>
         <input type='checkbox' id='case_menu_lateral'>
         <label for='case_menu_lateral'>
             <div class='overlay'></div>
@@ -83,3 +92,9 @@
         </div>
     </main>
 {% endblock %}
+{% block javascripts %}
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
+    <script src="{{ asset('js/barre.js') }}"></script>
+    
+{% endblock %}
+

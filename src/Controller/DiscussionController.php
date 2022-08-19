@@ -2,11 +2,14 @@
 
 namespace App\Controller;
 
+
 use App\Entity\Discussion;
 use App\Repository\UsersRepository;
 use App\Repository\DiscussionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -84,4 +87,26 @@ class DiscussionController extends AbstractController
             'messages' => $discussion->getMessages(),
         ]);
     }
+
+  /**
+     * @Route("/recherche_utilisateur", name="recherche")
+     */
+    public function recherche(Request $Request, UsersRepository $UserRepository) :JsonResponse{
+        $nomuser = $Request->request->get('user');
+       if($nomuser){
+          $users = $UserRepository->findByLike($nomuser);
+          $idx=0;
+          if(!$users){
+           return new JsonResponse(['aucun utilisateur']);
+          }
+           foreach($users as $user){
+               $jsondata[$idx++] = ['id' => $user -> getId(), "username" => $user->getUsername()];
+           }
+           return new JsonResponse($jsondata);
+       }else{
+           return new JsonResponse("aucun utilisateur");
+       }
+
+      
+   }
 }
