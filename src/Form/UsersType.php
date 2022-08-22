@@ -15,7 +15,7 @@ class UsersType extends AbstractType
         $builder
             ->add('username')
             ->add('email')
-            ->add('photo')
+            ->add('photo', FileType::class, array('data_class' => null))
         ;
     }
 
