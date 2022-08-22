@@ -1,6 +1,13 @@
 let plusDeDiscussion = document.getElementById('plus_discussion');
 let discussions = document.getElementsByClassName('discussion');
 
+(function(){
+    Object.entries(discussions).forEach(entry => {
+        const [key, value] = entry;
+        value.lastElementChild.innerText = date_diff(new Date(value.lastElementChild.innerText));
+    });
+})()
+
 plusDeDiscussion.addEventListener('click', afficherPlus);
 
 function afficherPlus(e){
@@ -35,7 +42,16 @@ function afficherPlus(e){
                     nouveauNomDiscussion.setAttribute('class', 'nom_discussion');
                     nouveauNomDiscussion.innerText = value['nom'];
                     nouvelleDiscussion.append(nouveauNomDiscussion);
-                    nouvelleDiscussion.insertAdjacentElement('beforebegin', plusDeDiscussion);
+                    let dernierMessage = document.createElement('p');
+                    dernierMessage.setAttribute('class', 'dernier_message');
+                    dernierMessage.innerText = value['message'];
+                    nouvelleDiscussion.append(dernierMessage);
+                    let heureDernierMessage = document.createElement('p');
+                    heureDernierMessage.setAttribute('class', 'date_dernier_message');
+                    let date1 = new Date(value['date_envoi']['date']);
+                    heureDernierMessage.innerText = date_diff(date1);
+                    nouvelleDiscussion.append(heureDernierMessage);
+                    plusDeDiscussion.insertAdjacentElement('beforebegin', nouvelleDiscussion);
                     nouvelAffichage++;
                 }else if(nouvelAffichage >= 3 && value['message'] != ''){
                     reste = 'oui'; 

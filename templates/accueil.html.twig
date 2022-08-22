@@ -2,6 +2,7 @@
 
 {% block javascripts %}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="{{ asset('js/date_diff.js') }}" ></script>
     <script src="{{ asset('js/reponse_notification.js') }}" defer></script>
     <script src="{{ asset('js/affichage_discussion.js') }}" defer></script>
 {% endblock %}
@@ -104,17 +105,37 @@
             <div class='overlay'></div>
         </label>
         <div id='liste_conversations'>
-            {% for discussion in discussions | slice(0,3) %}
-                <a href="{{ 'discussion/' ~ discussion.getId()}}"class='discussion'>
-                    <div class='photo_discussion_conteneur'>
-                        <img class='photo_discussion' src='{{ asset(discussion.getPhoto()) }}' alt='photo_discussion'>
-                    </div>
-                    <h3 class='nom_discussion'>{{ discussion.getNom() }}</h3>
-                    {% if not discussion.getMessages() is empty %}
-                        <p class='dernier_message'>{{ (discussion.getMessages() | last).getMessage() }}</p>
-                        <p class='date_dernier_message'>{{ (discussion.getMessages() | last).getDateEnvoi() | date("d/m/Y")}}</p>
-                    {% endif %}
-                </a>
+            {% set affichage = 0 %}
+            {% for discussion in discussions %}
+                {% if discussion.hasMessage() and affichage < 3 %}
+                    {% set affichage = affichage + 1 %}
+                    <a href="{{ 'discussion/' ~ discussion.getId()}}"class='discussion'>
+                        <div class='photo_discussion_conteneur'>
+                        {% if not discussion.getPhoto() is empty %}
+                            <img class='photo_discussion' src='{{ asset(discussion.getPhoto()) }}' alt='photo_discussion'>
+                        {% else %}
+                            {% for membre in discussion.getMembres() %}
+                                {% if not membre.getUsername() is same as(user.getUsername()) %}
+                                    <img class='photo_discussion' src='{{ asset(membre.getPhoto()) }}' alt='photo_discussion'>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                        </div>
+                        {% if not discussion.getNom() is empty%}
+                            <h3 class='nom_discussion'>{{ discussion.getNom() }}</h3>
+                        {% else %}
+                            {% for membre in discussion.getMembres() %}
+                                {% if not membre.getUsername() is same as(user.getUsername()) %}
+                                    <h3 class='nom_discussion'>{{ membre.getUsername }}</h3>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                        {% if not discussion.getMessages() is empty %}
+                            <p class='dernier_message'>{{ (discussion.getMessages() | last).getMessage() }}</p>
+                            <p class='date_dernier_message'>{{ (discussion.getMessages() | last).getDateEnvoi() | date}}</p>
+                        {% endif %}
+                    </a>
+                {% endif %}
             {% endfor %}
             <div id='plus_discussion'>
                 <div class='barre_horizontale'></div>
