@@ -64,7 +64,8 @@ class MessageController extends AbstractController
         $discussion->addMessage($message);    
         $entityManager->persist($discussion);
         $entityManager->flush();
+        $jsonData = ['nom' => $user->getUsername(), 'photo' => $user->getPhoto()];
         
-        return new JsonResponse('Message envoyé avec succès');
+        return new JsonResponse($jsonData);
     }
 }
