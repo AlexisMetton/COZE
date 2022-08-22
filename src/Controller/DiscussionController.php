@@ -2,15 +2,22 @@
 
 namespace App\Controller;
 
+use App\Entity\Photo;
 use App\Entity\Discussion;
+use App\Entity\Notification;
+use App\Entity\Users;
+use App\Form\UsersType;
 use App\Repository\UsersRepository;
 use App\Repository\DiscussionRepository;
+use App\Service\FileUploader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\User\User;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class DiscussionController extends AbstractController
 {
@@ -26,7 +33,41 @@ class DiscussionController extends AbstractController
             'user' => $user,
             'discussions' => $user->getDiscussions(),
             'amis' => $user->getAmis(), 
-            'notifications' => $user->getNotifications(),
+            'notifications' => $user->getNotifications(), 
+        ]);
+    }
+
+    /**
+     * @Route("/profil/{id}", name="profil")
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function edit(Request $request, EntityManagerInterface $entityManager, FileUploader $fileUploader)
+    {
+        /** @var \App\Entity\Users $user */
+        $user = $this->getUser();
+        $form = $this->createForm(UsersType::class, $user);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            /** @var UploadedFile $profilFile */
+            $photoFile = $form->get('photo')->getData();
+            if($photoFile){
+                $photoFileName = $fileUploader->upload($photoFile);
+                $user->setPhoto('img/' . $photoFileName);
+            }
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($user);
+            $entityManager->flush();
+            return $this->redirectToRoute('app_login');
+        }
+
+        return $this->render('users/profil.html.twig', [
+            'user' => $user,
+            'discussions' => $user->getDiscussions(),
+            'amis' => $user->getAmis(), 
+            'notifications' => $user->getNotifications(), 
+            'form' => $form->createView()
         ]);
     }
 
@@ -151,5 +192,5 @@ class DiscussionController extends AbstractController
             'membres' => $discussion->getMembres(),
             'messages' => $discussion->getMessages(),
         ]);
-    }
+}    
 }

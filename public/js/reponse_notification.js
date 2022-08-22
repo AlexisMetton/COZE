@@ -58,3 +58,30 @@ function refuser(e){
     })
 }
 
+
+let notification = document.getElementsByClassName("notification");
+
+function notifier(e){
+    let notifs = e.srcElement.parentElement;
+    let idNotif = notifs.getAttribute("id").substring(12);
+    notifs.remove();
+    if (liste_notification.children.length == 0){
+        liste_notification.innerHTML = "<p style='text-align:center;'>Aucune notifications</p>";
+    }
+    $.ajax({
+        type:'POST',
+        url:'/notification/supprimée',
+        dataType:'json',
+        data:{id:idNotif},
+        async:true,
+        success:function(data){
+            console.log(data);
+        }
+    })
+    let nb_notification = document.getElementById('nombre_notification');
+    if(nb_notification.innerText == '1'){
+        nb_notification.remove();
+    }else{
+        nb_notification.innerText -= 1;
+    }
+}
