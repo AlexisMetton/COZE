@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Discussion;
+use App\Entity\Users;
+use App\Form\UsersType;
 use App\Repository\UsersRepository;
 use App\Repository\DiscussionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -35,15 +37,26 @@ class DiscussionController extends AbstractController
      * @Route("/profil/{id}", name="profil")
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function edit()
+    public function edit(Request $request, EntityManagerInterface $entityManager)
     {
         /** @var \App\Entity\Users $user */
         $user = $this->getUser();
+        $form = $this->createForm(UsersType::class, $user);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($user);
+            $entityManager->flush();
+            return $this->redirectToRoute('home');
+        }
+
         return $this->render('users/profil.html.twig', [
             'user' => $user,
             'discussions' => $user->getDiscussions(),
             'amis' => $user->getAmis(), 
             'notifications' => $user->getNotifications(), 
+            'form' => $form->createView()
         ]);
     }
 

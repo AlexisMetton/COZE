@@ -10,7 +10,7 @@
     <style>
         body{min-width: 470px;}
         *{padding:0;margin:0;box-sizing:border-box; text-decoration:none;}
-        header{display:flex; justify-content:space-between;;margin-bottom:100px; align-items:center; padding : 0 50px;}
+        header{display:flex; justify-content:space-between;align-items:center; padding : 0 50px;}
         header h1{font-size : 70px}
         body{background-color:rgb(54,54,54); overflow-x:hidden; width:100vw}
         header a{text-decoration:none;}
@@ -53,6 +53,13 @@
         .ami{display:flex; justify-content:center;padding : 10px;cursor:pointer; color:rgb(120,120,120); align-items:center}
         #deconnection{height:50px;width:50px; margin : 20px 0}
         #lienmodif{width: clamp(30px, 100%, 100px);margin-top: 20px;}
+        #profil_user{width:clamp(30px, 100%, 250px);}
+        .modiff{display:flex;}
+        input{text-align: center;background-color:transparent;border-color:rgb(84,153,86); margin:10px;padding:5px;border-radius:10px;}
+        input:focus{background-color:whitesmoke;}
+        label{text-align:center;}
+        .button .sauvegarder{background-color:rgb(84,153,86);border-style:none;padding:10px;border-radius:10px;margin:10px;}
+        .button .annuler{background-color:rgb(153, 84, 84);border-style:none;padding:10px;border-radius:10px;margin:10px;}
         @media  screen and (max-width:666px) {
             #menu_lateral{width:30vw;}
             #case_menu_lateral:checked ~ #menu_lateral{left:70%;}
@@ -120,8 +127,21 @@
         <label for='case_menu_lateral'>
             <div class='overlay'></div>
         </label>
-        <div id=''>
-
+        <div id='liste_conversations'>
+        <img id='profil_user' src='{{ asset(user.getPhoto()) }}' alt='photo_user'>
+            <div style="text-align:center">
+            {{ form_start(form)}}
+                {{ form_row(form.photo) }}
+                <div class="modiff">
+                    {{ form_row(form.username) }}
+                    {{ form_row(form.email) }}
+                </div>
+                <div style="display:flex;justify-content:center" class="button">
+                    <button class="sauvegarder">Sauvegarder</button>
+                    <a href="{{ path('home') }}"><button class="annuler">Annuler</button></a>
+            </div>
+            {{ form_end(form) }}
+            </div>
         </div>
 
         <div id='menu_lateral'>
