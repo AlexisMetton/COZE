@@ -7,11 +7,11 @@ use App\Repository\UsersRepository;
 use App\Repository\DiscussionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManagerInterface;
-use PhpParser\Node\Expr\Cast\Array_;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\User\User;
 
 class DiscussionController extends AbstractController
 {
@@ -27,7 +27,23 @@ class DiscussionController extends AbstractController
             'user' => $user,
             'discussions' => $user->getDiscussions(),
             'amis' => $user->getAmis(), 
-            'notifications' => $user->getNotifications()
+            'notifications' => $user->getNotifications(), 
+        ]);
+    }
+
+    /**
+     * @Route("/profil/{id}", name="profil")
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function edit()
+    {
+        /** @var \App\Entity\Users $user */
+        $user = $this->getUser();
+        return $this->render('users/profil.html.twig', [
+            'user' => $user,
+            'discussions' => $user->getDiscussions(),
+            'amis' => $user->getAmis(), 
+            'notifications' => $user->getNotifications(), 
         ]);
     }
 
@@ -130,5 +146,5 @@ class DiscussionController extends AbstractController
             'messages' => $discussion->getMessages(),
             'user_repository' => $user_repository,
         ]);
-    }
+}    
 }

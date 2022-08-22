@@ -120,24 +120,8 @@
         <label for='case_menu_lateral'>
             <div class='overlay'></div>
         </label>
-        <div id='liste_conversations'>
-            {% for discussion in discussions | slice(0,3) %}
-                <a href="{{ 'discussion/' ~ discussion.getId()}}"class='discussion'>
-                    <div class='photo_discussion_conteneur'>
-                        <img class='photo_discussion' src='{{ asset(discussion.getPhoto()) }}' alt='photo_discussion'>
-                    </div>
-                    <h3 class='nom_discussion'>{{ discussion.getNom() }}</h3>
-                    {% if not discussion.getMessages() is empty %}
-                        <p class='dernier_message'>{{ (discussion.getMessages() | last).getMessage() }}</p>
-                        <p class='date_dernier_message'>{{ (discussion.getMessages() | last).getDateEnvoi() | date("d/m/Y")}}</p>
-                    {% endif %}
-                </a>
-            {% endfor %}
-            <div id='plus_discussion'>
-                <div class='barre_horizontale'></div>
-                    <p>Plus&nbsp;de&nbsp;conversation</p>
-                <div class='barre_horizontale'></div>
-            </div>
+        <div id=''>
+
         </div>
 
         <div id='menu_lateral'>
