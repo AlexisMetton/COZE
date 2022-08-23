@@ -29,7 +29,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $username;
 
-        /**
+    /**
      * @ORM\Column(type="string", length=255, nullable=false, unique=true)
      */
     private $email;

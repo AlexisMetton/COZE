@@ -35,9 +35,9 @@ class Discussion
     private $nom;
 
     /**
-     * @ORM\Column(type="string", length=255, options={"default" : "/img/profil.svg"})
+     * @ORM\Column(type="string", length=255)
      */
-    private $photo = "/img/profil.svg";
+    private $photo;
 
     public function __construct()
     {
@@ -67,6 +67,11 @@ class Discussion
         return $this;
     }
 
+    public function hasMembre(Users $membre): bool
+    {
+        return $this->membres->contains($membre);
+    }
+
     public function removeMembre(Users $membre): self
     {
         $this->membres->removeElement($membre);
@@ -90,6 +95,11 @@ class Discussion
         }
 
         return $this;
+    }
+
+    public function hasMessage(): bool
+    {
+        return (count($this->messages) > 0);
     }
 
     public function removeMessage(Message $message): self

@@ -2,8 +2,6 @@
 
 {% block javascripts %}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-    <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
-    <script src="{{ asset('js/barre.js') }}"></script>
     <script src="{{ asset('js/reponse_notification.js') }}" defer></script>
     <script src="{{ asset('js/affichage_discussion.js') }}" defer></script>
 {% endblock %}
@@ -12,7 +10,7 @@
     <style>
         body{min-width: 470px;}
         *{padding:0;margin:0;box-sizing:border-box; text-decoration:none;}
-        header{display:flex; justify-content:space-between;;margin-bottom:100px; align-items:center; padding : 0 50px;}
+        header{display:flex; justify-content:space-between;align-items:center; padding : 0 50px;}
         header h1{font-size : 70px}
         body{background-color:rgb(54,54,54); overflow-x:hidden; width:100vw}
         header a{text-decoration:none;}
@@ -55,6 +53,13 @@
         .ami{display:flex; justify-content:center;padding : 10px;cursor:pointer; color:rgb(120,120,120); align-items:center}
         #deconnection{height:50px;width:50px; margin : 20px 0}
         #lienmodif{width: clamp(30px, 100%, 100px);margin-top: 20px;}
+        #profil_user{width:clamp(30px, 100%, 250px);}
+        .modiff{display:flex;}
+        input{text-align: center;background-color:transparent;border-color:rgb(84,153,86); margin:10px;padding:5px;border-radius:10px;}
+        input:focus{background-color:whitesmoke;}
+        label{text-align:center;}
+        .button .sauvegarder{background-color:rgb(84,153,86);border-style:none;padding:10px;border-radius:10px;margin:10px;}
+        .button .annuler{background-color:rgb(153, 84, 84);border-style:none;padding:10px;border-radius:10px;margin:10px;}
         @media  screen and (max-width:666px) {
             #menu_lateral{width:30vw;}
             #case_menu_lateral:checked ~ #menu_lateral{left:70%;}
@@ -64,13 +69,12 @@
             #case_menu_lateral:checked ~ #menu_lateral{left:60%;}
         }
         @media  screen and (max-width:900px) {
-            #recherche{position:relative;margin-top:-50px;margin-bottom:50px;}
+            #recherche{position:relative;margin-top:20px;margin-bottom:50px;}
         }
         #label_input{margin-left:7px;width:25px;}
         #label_input img{position:absolute;}
         #id_input{visibility:hidden;width:25px;}
     </style>
-  
 
     <header>
         <a style="color:black;" href="{{ path('accueil') }}"><h1>C<span><img src="{{ asset('img/coze.svg') }}" height="48px"></span>ZE</h1></a>
@@ -124,42 +128,19 @@
             <div class='overlay'></div>
         </label>
         <div id='liste_conversations'>
-            {% set affichage = 0 %}
-            {% for discussion in discussions %}
-                {% if discussion.hasMessage() and affichage < 3 %}
-                    {% set affichage = affichage + 1 %}
-                    <a href="{{ 'discussion/' ~ discussion.getId()}}"class='discussion'>
-                        <div class='photo_discussion_conteneur'>
-                        {% if not discussion.getPhoto() is empty %}
-                            <img class='photo_discussion' src='{{ asset(discussion.getPhoto()) }}' alt='photo_discussion'>
-                        {% else %}
-                            {% for membre in discussion.getMembres() %}
-                                {% if not membre.getUsername() is same as(user.getUsername()) %}
-                                    <img class='photo_discussion' src='{{ asset(membre.getPhoto()) }}' alt='photo_discussion'>
-                                {% endif %}
-                            {% endfor %}
-                        {% endif %}
-                        </div>
-                        {% if not discussion.getNom() is empty%}
-                            <h3 class='nom_discussion'>{{ discussion.getNom() }}</h3>
-                        {% else %}
-                            {% for membre in discussion.getMembres() %}
-                                {% if not membre.getUsername() is same as(user.getUsername()) %}
-                                    <h3 class='nom_discussion'>{{ membre.getUsername }}</h3>
-                                {% endif %}
-                            {% endfor %}
-                        {% endif %}
-                        {% if not discussion.getMessages() is empty %}
-                            <p class='dernier_message'>{{ (discussion.getMessages() | last).getMessage() }}</p>
-                            <p class='date_dernier_message'>{{ (discussion.getMessages() | last).getDateEnvoi() | date}}</p>
-                        {% endif %}
-                    </a>
-                {% endif %}
-            {% endfor %}
-            <div id='plus_discussion'>
-                <div class='barre_horizontale'></div>
-                    <p>Plus&nbsp;de&nbsp;conversation</p>
-                <div class='barre_horizontale'></div>
+        <img id='profil_user' src='{{ asset(user.getPhoto()) }}' alt='photo_user'>
+            <div style="text-align:center">
+            {{ form_start(form)}}
+                {{ form_row(form.photo) }}
+                <div class="modiff">
+                    {{ form_row(form.username) }}
+                    {{ form_row(form.email) }}
+                </div>
+                <div style="display:flex;justify-content:center" class="button">
+                    <button class="sauvegarder">Sauvegarder</button>
+                    <a href="{{ path('home') }}"><button class="annuler">Annuler</button></a>
+            </div>
+            {{ form_end(form) }}
             </div>
         </div>
 
@@ -184,4 +165,3 @@
         </div>
     </main>
 {% endblock %}
-

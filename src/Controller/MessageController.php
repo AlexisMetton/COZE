@@ -58,13 +58,14 @@ class MessageController extends AbstractController
         $message->setUserId($user);
         $message->setDiscussionId($discussion);
         $message->setMessage($request->request->get('message'));
-        $message->setDateEnvoi(new \DateTime());
+        $message->setDateEnvoi(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
         $entityManager->persist($message);
         $entityManager->flush();
         $discussion->addMessage($message);    
         $entityManager->persist($discussion);
         $entityManager->flush();
+        $jsonData = ['nom' => $user->getUsername(), 'photo' => $user->getPhoto()];
         
-        return new JsonResponse('Message envoyé avec succès');
+        return new JsonResponse($jsonData);
     }
 }
