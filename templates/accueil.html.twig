@@ -2,6 +2,8 @@
 
 {% block javascripts %}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
+    <script src="{{ asset('js/barre.js') }}"></script>
     <script src="{{ asset('js/reponse_notification.js') }}" defer></script>
     <script src="{{ asset('js/affichage_discussion.js') }}" defer></script>
 {% endblock %}
@@ -109,10 +111,5 @@
             <a href="{{ path('app_logout') }}"><img id='deconnection' src='{{ asset('img/se deconnecter.png') }}' alt='deconnection'></a>
         </div>
     </main>
-{% endblock %}
-{% block javascripts %}
-    <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
-    <script src="{{ asset('js/barre.js') }}"></script>
-    
 {% endblock %}
 

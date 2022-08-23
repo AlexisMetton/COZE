@@ -23,7 +23,7 @@ $(document).ready(function(){
                             let resultat = document.createElement('div');
                             resultat.setAttribute('id','resultat');
                             users.forEach(element =>{
-                                suggestion+=`<div  class="user"><p>${element.username}</p></div>`; 
+                                suggestion+=`<div  class="user" onclick="ajout_amis(event)"><p>${element.username}</p></div>`; 
                                 document.getElementById('resultats').innerHTML=suggestion; 
                                 $("<img class='photo' src='../img/profil.svg'></img>").appendTo(".user");
                                 console.log(element);     
@@ -50,6 +50,14 @@ $(document).ready(function(){
         }
     })
 })
+
+function ajout_amis(event){
+ let user = document.querySelectorAll('.user')
+ let amis= event.target.id
+
+ 
+ console.log(amis)
+}
 
 
 
