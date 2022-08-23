@@ -74,30 +74,6 @@ class AmisController extends AbstractController
         }
     }
 
-
-    /**
-     * @Route("/discussion/qfewver/{id}", name="ajouter_ami")
-     */
-    public function notif_message(UsersRepository $user_repository, int $id, EntityManagerInterface $entityManager):Response
-    {
-        /** @var \App\Entity\Users $user */
-        $user = $this->getUser();
-        $ami = $user_repository->find($id);
-        $user->addAmi($ami);
-        $entityManager->persist($user);
-        $entityManager->flush();
-        $notification_message = new Notification();
-        $notification_message->setType("url");
-        $notification_message->setMessage($user->getUsername() . ' vous a envoyé un message.');
-        $notification_message->setLogo($user->getPhoto());
-        $entityManager->persist($notification_message);
-        $entityManager->flush();
-        $ami->addNotification($notification_message);
-        $entityManager->persist($ami);
-        $entityManager->flush();
-        return new Response($ami->getUsername() . " vous a envoyé un message");
-    }
-
     /**
      * @Route("/notification/supprimée", name="notification_supprimée")
      */
