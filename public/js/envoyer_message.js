@@ -15,7 +15,7 @@ function envoyer(e){
             success:function(data){
                 let nouveauMessage = document.createElement('div');
                 nouveauMessage.setAttribute('class', 'message_user');
-                nouveauMessage.innerHTML = '<h3 class=\'nom_user\'>'.concat(data['nom'], '</h3><div class=\'message_info_user\'><div class=\'photo_conteneur_user\'><img class=\'photo_user\' src=\'', data['photo'], '\' alt=\'photo_user\'></div><p class=\'message_contenu_user\'>', envoie.value, '</p></div><p class=\'date_message_user\'>A l\'instant</p></div>');
+                nouveauMessage.innerHTML = '<h3 class=\'nom_user\'>'.concat(data['nom'], '</h3><div class=\'message_info_user\'><div class=\'photo_conteneur_user\'><img class=\'photo_user\' src=\' ../',data['photo'],' \' alt=\'photo_user\'></div><p class=\'message_contenu_user\'>', envoie.value, '</p></div><p class=\'date_message_user\'>A l\'instant</p></div>');
                 document.getElementById('liste_message').append(nouveauMessage);
                 document.getElementById('liste_message').scrollTo(0, document.getElementById('liste_message').scrollHeight);
                 e.srcElement.value = "";

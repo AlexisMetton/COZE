@@ -53,7 +53,7 @@ class DiscussionController extends AbstractController
             $photoFile = $form->get('photo')->getData();
             if($photoFile){
                 $photoFileName = $fileUploader->upload($photoFile);
-                $user->setPhoto('img/' . $photoFileName);
+                $user->setPhoto('/img/' . $photoFileName);
             }
 
             $entityManager = $this->getDoctrine()->getManager();

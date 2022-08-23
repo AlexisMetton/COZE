@@ -28,6 +28,7 @@ class AmisController extends AbstractController
         $notification = new Notification();
         $notification->setType("confirmation");
         $notification->setMessage($user->getUsername() . ' vous a ajouté(e) en ami. Souhaitez-vous accepter l\'invitation ?');
+        $notification->setLogo($user->getPhoto());
         $entityManager->persist($notification);
         $entityManager->flush();
         $ami->addNotification($notification);
@@ -58,6 +59,7 @@ class AmisController extends AbstractController
                 $notification_reponse = new Notification();
                 $notification_reponse->setType("info_accepter");
                 $notification_reponse->setMessage($user->getUsername() . ' a accepté(e) votre demande d\'ami. Il/elle vous a ajouté(e) en ami');
+                $notification_reponse->setLogo($user->getPhoto());
                 $entityManager->persist($notification_reponse);
                 $entityManager->flush();
                 $ami->addNotification($notification_reponse);
@@ -70,6 +72,30 @@ class AmisController extends AbstractController
         }else{
             return new JsonResponse('Erreur envoi donnée ajax.');
         }
+    }
+
+
+    /**
+     * @Route("/discussion/qfewver/{id}", name="ajouter_ami")
+     */
+    public function notif_message(UsersRepository $user_repository, int $id, EntityManagerInterface $entityManager):Response
+    {
+        /** @var \App\Entity\Users $user */
+        $user = $this->getUser();
+        $ami = $user_repository->find($id);
+        $user->addAmi($ami);
+        $entityManager->persist($user);
+        $entityManager->flush();
+        $notification_message = new Notification();
+        $notification_message->setType("url");
+        $notification_message->setMessage($user->getUsername() . ' vous a envoyé un message.');
+        $notification_message->setLogo($user->getPhoto());
+        $entityManager->persist($notification_message);
+        $entityManager->flush();
+        $ami->addNotification($notification_message);
+        $entityManager->persist($ami);
+        $entityManager->flush();
+        return new Response($ami->getUsername() . " vous a envoyé un message");
     }
 
     /**

@@ -88,8 +88,10 @@
                         {% if notification.getUrl() is empty %}
                             {% if notification.getType() is same as("info_accepter") %}
                                 <div class='notification' id="{{ 'notification' ~ notification.getId() }}" onclick="notifier(event)">
-                            {% else %}
+                            {% elseif notification.getType() is same as("confirmation") %}
                             <div class='notification'>
+                            {% else %}
+                            <div class='notification' id="{{ 'notification' ~ notification.getId() }}" onclick="notifier(event)">
                             {% endif %}
                         {% else %}
                             <a class='notification'>
@@ -99,6 +101,8 @@
                                 <p style="grid-column: 2/4;grid-row: 1/2;padding: 10px;text-align: center;color: rgb(230,230,230);">{{notification.getMessage()}}</p>
                                 <button style="grid-column:2/3; grid-row:2/3; justify-self: end;background-color:transparent;border:none;margin-right:5px;cursor:pointer;" id="{{ 'confirmation' ~ notification.getId() }}" class="confirmation"><img src="{{asset('img/valider.png')}}" height="20px"></button> 
                                 <button style="grid-column:3/4; grid-row:2/3; justify-self: baseline;background-color:transparent;border:none;margin-left:5px;cursor:pointer;" id="{{ 'refus' ~ notification.getId() }}" class="refus"><img src="{{asset('img/refuser.png')}}" height="20px"></button>
+                            {% elseif notification.getType() is same as("info_accepter")%}
+                                <p style="grid-column:2/4; grid-row:1/3;text-align: center;color: rgb(230,230,230);">{{notification.getMessage()}}</p>
                             {% else %}
                                 <p style="grid-column:2/4; grid-row:1/3;text-align: center;color: rgb(230,230,230);">{{notification.getMessage()}}</p>
                             {% endif %}
