@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+
+use App\Entity\Notification;
 use App\Entity\Discussion;
 use App\Entity\Message;
 use App\Repository\DiscussionRepository;
@@ -43,8 +45,26 @@ class MessageController extends AbstractController
         $entityManager->persist($discussion);
         $entityManager->flush();
         $jsonData = ['nom' => $user->getUsername(), 'photo' => $user->getPhoto()];
+        
         $update = new Update('https://message',json_encode(["id" => $idDiscussion, 'nom' => $user->getUsername(), 'photo' => $user->getPhoto(), 'message' => $request->request->get('message'), 'heure' => new \DateTime()]));
         $hub->publish($update);
+
+        foreach ($discussion->getMembres() as $membre){
+            if($membre != $user){
+                        $notification_message = new Notification();
+                        $notification_message->setType("url");
+                        $notification_message->setMessage($user->getUsername() . ' vous a envoyé un message.');
+                        $notification_message->setLogo($user->getPhoto());
+                        $notification_message->setUrl('discussion/'.$discussion->getId());
+                        $entityManager->persist($notification_message);
+                        $entityManager->flush();
+                        $membre->addNotification($notification_message);
+                        $entityManager->persist($membre);
+                        $entityManager->flush();
+            }
+        }
+        
         return new JsonResponse($jsonData);
     }
+
 }
