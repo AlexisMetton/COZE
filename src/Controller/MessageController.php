@@ -46,7 +46,8 @@ class MessageController extends AbstractController
         $entityManager->flush();
         $jsonData = ['nom' => $user->getUsername(), 'photo' => $user->getPhoto()];
         
-
+        $update = new Update('https://message',json_encode(["id" => $idDiscussion, 'nom' => $user->getUsername(), 'photo' => $user->getPhoto(), 'message' => $request->request->get('message'), 'heure' => new \DateTime()]));
+        $hub->publish($update);
 
         foreach ($discussion->getMembres() as $membre){
             if($membre != $user){
