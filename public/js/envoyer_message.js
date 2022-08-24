@@ -19,3 +19,6 @@ function envoyer(e){
         })
     }
 }
+
+//message direct vers le bas
+$("#liste_message").scrollTop($("#liste_message")[0].scrollHeight);

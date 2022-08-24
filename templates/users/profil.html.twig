@@ -59,7 +59,7 @@
         input:focus{background-color:whitesmoke;}
         label{text-align:center;}
         .button .sauvegarder{background-color:rgb(84,153,86);border-style:none;padding:10px;border-radius:10px;margin:10px;}
-        .button .annuler{background-color:rgb(153, 84, 84);border-style:none;padding:10px;border-radius:10px;margin:10px;}
+        .annuler{background-color:rgb(153, 84, 84);border-style:none;padding:10px;border-radius:10px;margin:10px;}
         @media  screen and (max-width:666px) {
             #menu_lateral{width:30vw;}
             #case_menu_lateral:checked ~ #menu_lateral{left:70%;}
@@ -138,9 +138,9 @@
                 </div>
                 <div style="display:flex;justify-content:center" class="button">
                     <button class="sauvegarder">Sauvegarder</button>
-                    <a href="{{ path('home') }}"><button class="annuler">Annuler</button></a>
-            </div>
             {{ form_end(form) }}
+                </div>
+                <a href="{{ path('home') }}"><button class="annuler">Annuler</button></a>
             </div>
         </div>
 

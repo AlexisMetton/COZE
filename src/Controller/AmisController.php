@@ -28,6 +28,7 @@ class AmisController extends AbstractController
         $notification = new Notification();
         $notification->setType("confirmation");
         $notification->setMessage($user->getUsername() . ' vous a ajouté(e) en ami. Souhaitez-vous accepter l\'invitation ?');
+        $notification->setLogo($user->getPhoto());
         $entityManager->persist($notification);
         $entityManager->flush();
         $ami->addNotification($notification);
@@ -58,12 +59,13 @@ class AmisController extends AbstractController
                 $notification_reponse = new Notification();
                 $notification_reponse->setType("info_accepter");
                 $notification_reponse->setMessage($user->getUsername() . ' a accepté(e) votre demande d\'ami. Il/elle vous a ajouté(e) en ami');
+                $notification_reponse->setLogo($user->getPhoto());
                 $entityManager->persist($notification_reponse);
                 $entityManager->flush();
                 $ami->addNotification($notification_reponse);
                 $entityManager->persist($ami);
                 $entityManager->flush();
-                $jsonData=["id"=>$ami->getId(), "username"=>$ami->getUsername()];
+                $jsonData=["id"=>$ami->getId(), "username"=>$ami->getUsername(), "photo"=>$ami->getPhoto()];
             }
             $notification_repository->remove($notification, true);
             return new JsonResponse($jsonData);
