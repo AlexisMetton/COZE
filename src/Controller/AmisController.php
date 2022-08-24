@@ -65,7 +65,7 @@ class AmisController extends AbstractController
                 $ami->addNotification($notification_reponse);
                 $entityManager->persist($ami);
                 $entityManager->flush();
-                $jsonData=["id"=>$ami->getId(), "username"=>$ami->getUsername()];
+                $jsonData=["id"=>$ami->getId(), "username"=>$ami->getUsername(), "photo"=>$ami->getPhoto()];
             }
             $notification_repository->remove($notification, true);
             return new JsonResponse($jsonData);

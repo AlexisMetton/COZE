@@ -26,7 +26,7 @@ function confirmer(e){
                 liste_notification.innerHTML = "<p style='text-align:center;'>Aucune notifications</p>";
             }
             let amis = document.getElementById('liste_amis');
-            amis.innerHTML = amis.innerHTML.concat('<a href=\'discussion/check/',data['id'],'\' class=\'ami\'><p>',data['username'],'</p></a>');
+            amis.innerHTML = amis.innerHTML.concat('<a href=\'discussion/check/',data['id'],'\' class=\'ami\'><img class=\'photo_amis\' src=\'',data['photo'],'\' alt=\'photo de ',data['username'],'\'><p>',data['username'],'</p></a>');
             let nb_notification = document.getElementById('nombre_notification');
             if(nb_notification.innerText == '1'){
                 nb_notification.remove();
