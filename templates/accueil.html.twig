@@ -1,9 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% block javascripts %}
-    <script type="application/json" id="mercure-url">
-        {{ mercure('https://message')|json_encode(constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG'))|raw }}
-    </script>
+    {% for discussion in discussions %}
+        <script type="application/json" class="mercure-url">
+            {{ mercure('https://message/' ~ discussion.getId())|json_encode(constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG'))|raw }}
+        </script>
+    {% endfor %}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="{{ asset('js/date_diff.js') }}" ></script>
     <script src="{{ asset('js/reponse_notification.js') }}" defer></script>
@@ -129,7 +131,7 @@
         <div id='liste_conversations'>
             {% set affichage = 0 %}
             {% for discussion in discussions %}
-                {% if discussion.hasMessage() and affichage < 3 %}
+                {% if discussion.hasAnyMessage() and affichage < 3 %}
                     {% set affichage = affichage + 1 %}
                     <a href="{{ 'discussion/' ~ discussion.getId()}}"class='discussion'>
                         <div class='photo_discussion_conteneur'>

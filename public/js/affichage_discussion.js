@@ -1,13 +1,15 @@
 let plusDeDiscussion = document.getElementById('plus_discussion');
 let discussions = document.getElementsByClassName('discussion');
 
-const url = JSON.parse(document.getElementById("mercure-url").textContent);
-
-const eventSource = new EventSource(url);
-eventSource.onmessage = e => {
-    let data = JSON.parse(e.data);
-    
+const urls = document.getElementsByClassName('mercure-url');
+for(let i = 0; i < urls.length; i++){
+    let url = JSON.parse(urls[i].textContent);
+    new EventSource(url).onmessage = e =>{
+        let data = JSON.parse(e.data);
+        console.log(data['nom']);
+    };
 }
+
 
 (function(){
     Object.entries(discussions).forEach(entry => {

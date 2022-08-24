@@ -87,6 +87,11 @@ class Discussion
         return $this->messages;
     }
 
+    public function getLastMessage(): Message
+    {
+        return $this->messages[count($this->messages) - 1];
+    }
+
     public function addMessage(Message $message): self
     {
         if (!$this->messages->contains($message)) {
@@ -97,7 +102,12 @@ class Discussion
         return $this;
     }
 
-    public function hasMessage(): bool
+    public function hasMessage(Message $message):bool
+    {
+        return ($this->messages->contains($message));
+    }
+
+    public function hasAnyMessage(): bool
     {
         return (count($this->messages) > 0);
     }
