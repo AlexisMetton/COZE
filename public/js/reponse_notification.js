@@ -27,6 +27,9 @@ function confirmer(e){
             }
             let amis = document.getElementById('liste_amis');
             amis.innerHTML = amis.innerHTML.concat('<a href=\'discussion/check/',data['id'],'\' class=\'ami\'><img class=\'photo_amis\' src=\'',data['photo'],'\' alt=\'photo de ',data['username'],'\'><p>',data['username'],'</p></a>');
+            let lateral = document.getElementById('titre_lateral');
+            let nb = document.getElementsByClassName("ami").length;
+            lateral.innerHTML = '<h3 id=\'titre_lateral\'>Amis&nbsp;-&nbsp;'+ nb +'</h3>';
             let nb_notification = document.getElementById('nombre_notification');
             if(nb_notification.innerText == '1'){
                 nb_notification.remove();

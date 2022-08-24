@@ -174,7 +174,7 @@
             <a id="lienmodif" href="{{ path('profil', {id: user.getId()}) }}"><img id='photo_user' src='{{ asset(user.getPhoto()) }}' alt='photo_user'></a>
             <!--<label for="id_input" id="label_input"><img src="{{ asset('img/plus.png') }}" height="20px"><input type="file" id="id_input"></label>-->
             <div class='barre_horizontale_lateral'></div>
-            <h3 id='titre_lateral'>Amis&nbsp;-&nbsp;{{ amis | length}}</h3>
+            
             <div id='liste_amis'>
                 {% for ami in amis %}
                     <a href="{{'discussion/check/' ~ ami.getId()}}" class='ami'>
@@ -183,6 +183,7 @@
                     </a>
                 {% endfor %}
             </div>
+            <h3 id='titre_lateral'>Amis&nbsp;-&nbsp;{{ amis | length}}</h3>
             <a href="{{ path('app_logout') }}"><img id='deconnection' src='{{ asset('img/se deconnecter.png') }}' alt='deconnection'></a>
         </div>
     </main>
