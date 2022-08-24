@@ -1,6 +1,14 @@
 let plusDeDiscussion = document.getElementById('plus_discussion');
 let discussions = document.getElementsByClassName('discussion');
 
+const url = JSON.parse(document.getElementById("mercure-url").textContent);
+
+const eventSource = new EventSource(url);
+eventSource.onmessage = e => {
+    let data = JSON.parse(e.data);
+    
+}
+
 (function(){
     Object.entries(discussions).forEach(entry => {
         const [key, value] = entry;
