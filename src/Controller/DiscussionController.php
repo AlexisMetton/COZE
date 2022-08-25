@@ -34,8 +34,10 @@ class DiscussionController extends AbstractController
         for($i=0; $i<count($discussions); $i++){
             $tmp = $i;
             for($j=$i+1; $j<count($discussions); $j++){
-                if($discussions[$tmp]->getLastMessage()->getDateEnvoi() < $discussions[$j]->getLastMessage()->getDateEnvoi()){
+                if($discussions[$tmp]->hasAnyMessage() && $discussions[$j]->hasAnyMessage()){
+                    if($discussions[$tmp]->getLastMessage()->getDateEnvoi() < $discussions[$j]->getLastMessage()->getDateEnvoi()){
                     $tmp = $j;
+                }
                 }
             }
             $liste_discussion[] = $discussions[$tmp];
@@ -155,8 +157,10 @@ class DiscussionController extends AbstractController
         for($i=0; $i<count($discussions); $i++){
             $tmp = $i;
             for($j=$i+1; $j<count($discussions); $j++){
-                if($discussions[$tmp]->getLastMessage()->getDateEnvoi() < $discussions[$j]->getLastMessage()->getDateEnvoi()){
+                if($discussions[$tmp]->hasAnyMessage() && $discussions[$j]->hasAnyMessage()){
+                    if($discussions[$tmp]->getLastMessage()->getDateEnvoi() < $discussions[$j]->getLastMessage()->getDateEnvoi()){
                     $tmp = $j;
+                    }
                 }
             }
             $liste_discussion[] = $discussions[$tmp];
