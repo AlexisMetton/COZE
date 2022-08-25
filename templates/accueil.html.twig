@@ -6,6 +6,9 @@
             {{ mercure('https://message/' ~ discussion.getId())|json_encode(constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG'))|raw }}
         </script>
     {% endfor %}
+    <script type="application/json" id="mercure-url-notification">
+        {{ mercure('https://notification/' ~ user.getId())|json_encode(constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG'))|raw }}
+    </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="{{ asset('js/date_diff.js') }}" ></script>
     <script src="{{ asset('js/reponse_notification.js') }}" defer></script>

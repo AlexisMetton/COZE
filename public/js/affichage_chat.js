@@ -32,3 +32,27 @@ eventSource.onmessage = e => {
     });
     messages.scrollTo(0, messages.scrollHeight);
 })()
+
+
+let liste_notification = document.getElementById('liste_notification');
+const url_notification = JSON.parse(document.getElementById('mercure-url-notification').textContent);
+const eventSourcenotification = new EventSource(url_notification);
+eventSourcenotification.onmessage = e=>{
+    data = JSON.parse(e.data);    
+    let lien_notification = document.getElementById('lien_notification');
+    let notification_cloche = document.getElementById('nombre_notification');
+
+    if(notification_cloche == null){
+        notification_cloche = document.createElement('p');
+        notification_cloche.setAttribute('id', 'nombre_notification');
+        notification_cloche.innerHTML = "1";
+        lien_notification.insertAdjacentElement("afterend", notification_cloche);
+        liste_notification.innerHTML = "";
+    }else{
+        notification_cloche.innerText ++;
+    }
+
+    if(data['type'] == "url"){
+        document.getElementById('discussion/'.concat(data['discussion'])).remove();
+    }
+}

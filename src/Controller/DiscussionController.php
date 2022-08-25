@@ -265,6 +265,7 @@ class DiscussionController extends AbstractController
             'titre' => $nom,
             'membres' => $discussion->getMembres(),
             'messages' => $discussion->getMessages(),
+            'discussion' => $discussion->getId(),
         ]);
 }    
 }

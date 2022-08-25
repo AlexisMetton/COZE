@@ -88,3 +88,40 @@ function notifier(e){
         nb_notification.innerText -= 1;
     }
 }
+
+let liste_notification = document.getElementById('liste_notification');
+const url_notification = JSON.parse(document.getElementById('mercure-url-notification').textContent);
+const eventSourcenotification = new EventSource(url_notification);
+eventSourcenotification.onmessage = e=>{
+    data = JSON.parse(e.data);    
+    let lien_notification = document.getElementById('lien_notification');
+    let notification_cloche = document.getElementById('nombre_notification');
+
+    if(notification_cloche == null){
+        notification_cloche = document.createElement('p');
+        notification_cloche.setAttribute('id', 'nombre_notification');
+        notification_cloche.innerHTML = "1";
+        lien_notification.insertAdjacentElement("afterend", notification_cloche);
+        liste_notification.innerHTML = "";
+    }else{
+        notification_cloche.innerText ++;
+    }
+
+    if(data['type'] == "url"){
+        let notification = document.createElement('a');
+        notification.setAttribute('href', 'discussion/'.concat(data['discussion']));
+        notification.setAttribute('onclick', 'notifier(event)');
+        notification.setAttribute('class', 'notification');
+        notification.setAttribute('id', 'notification'.concat(data['id']));
+        let logo_notification = document.createElement('img');
+        logo_notification.setAttribute('class', 'logo_notification');
+        logo_notification.setAttribute('src', data['photo']);
+        logo_notification.setAttribute('alt', 'logo de notification');
+        let p = document.createElement('p');
+        p.setAttribute('style', 'grid-column:2/4; grid-row:1/3;text-align: center;color: rgb(230,230,230);');
+        p.innerHTML = data['message'];
+        liste_notification.prepend(notification);
+        notification.append(logo_notification);
+        notification.append(p);
+    }
+}

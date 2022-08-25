@@ -51,16 +51,21 @@ class MessageController extends AbstractController
 
         foreach ($discussion->getMembres() as $membre){
             if($membre != $user){
-                        $notification_message = new Notification();
-                        $notification_message->setType("url");
-                        $notification_message->setMessage($user->getUsername() . ' vous a envoyé un message.');
-                        $notification_message->setLogo($user->getPhoto());
-                        $notification_message->setUrl('discussion/'.$discussion->getId());
-                        $entityManager->persist($notification_message);
-                        $entityManager->flush();
-                        $membre->addNotification($notification_message);
-                        $entityManager->persist($membre);
-                        $entityManager->flush();
+                $notification_message = new Notification();
+                $notification_message->setType("url");
+                $notification_message->setMessage($user->getUsername() . ' vous a envoyé un message.');
+                $notification_message->setLogo($user->getPhoto());
+                $notification_message->setUrl('discussion/'.$discussion->getId());
+                $entityManager->persist($notification_message);
+                $entityManager->flush();
+                $membre->addNotification($notification_message);
+                $entityManager->persist($membre);
+                $entityManager->flush();
+
+                $update = new Update('https://notification/'.$membre->getId().'/message/'.$idDiscussion ,json_encode(["id" => $notification_message->getId()]));
+                $hub->publish($update);
+                $update = new Update('https://notification/'.$membre->getId(),json_encode(["id" => $notification_message->getId(), "discussion" => $idDiscussion, 'photo' => $user->getPhoto(), 'message' => $notification_message->getMessage(), 'type' => $notification_message->getType()]));
+                $hub->publish($update);
             }
         }
         
