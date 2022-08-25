@@ -156,7 +156,7 @@
                         {% endif %}
                         {% if not discussion.getMessages() is empty %}
                             <p class='dernier_message'>{{ (discussion.getMessages() | last).getMessage() }}</p>
-                            <p class='date_dernier_message'>{{ (discussion.getMessages() | last).getDateEnvoi() | date}}</p>
+                            <p class='date_dernier_message'  date="{{ (discussion.getMessages() | last).getDateEnvoi() | date}}">{{ (discussion.getMessages() | last).getDateEnvoi() | date}}</p>
                         {% endif %}
                     </a>
                 {% endif %}

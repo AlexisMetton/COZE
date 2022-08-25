@@ -185,6 +185,43 @@ class DiscussionController extends AbstractController
         return new JsonResponse($jsonData);
     }
 
+     /**
+     * @Route("/discussion/recuperer", name="recuperer_discussion")
+     */
+    public function recupererDiscussion(Request $request, DiscussionRepository $discussion_repository):JsonResponse
+    {
+        /** @var \App\Entity\Users $user */
+        $user = $this->getUser();
+        $idDiscussion = $request->request->get('id');
+        if(!$idDiscussion){
+            return new JsonResponse('Erreur ajax!');
+        }
+        $discussion = $discussion_repository->find($idDiscussion);
+        if(!$discussion){
+            return new JsonResponse('Cette discussion n\'existe pas!');
+        }
+        
+        if(!$discussion -> hasAnyMessage()){
+            $message = '';
+            $heure_message = '';
+        }else{
+            $message = $discussion->getMessages()[count($discussion->getMessages()) - 1]->getMessage();
+            $heure_message = $discussion->getMessages()[count($discussion->getMessages()) - 1]->getDateEnvoi();
+        }
+        if(!$discussion->getNom()){
+            foreach($discussion->getMembres() as $membre){
+                if ($membre->getUsername() != $user->getUsername()){
+                    $nom = $membre->getUsername();
+                }
+            }
+        }else{
+            $nom = $discussion -> getNom();
+        }
+        $jsonData = ['nom' => $nom, 'photo' => $discussion->getPhoto()];
+        
+        return new JsonResponse($jsonData);
+    }
+
     /**
      * @Route("/discussion/{id}", name="app_discussion")
      */
