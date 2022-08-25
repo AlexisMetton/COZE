@@ -1,5 +1,8 @@
 function date_diff(date1, date2 = new Date()){
     let difference = Math.abs(date2 - date1);
+    if(difference/1000 < 3){
+        return 'A l\'instant';
+    }
     if(difference/1000 < 60){
         return 'Il y a '.concat(Math.floor(difference/1000), ' secondes');
     }else if(difference/(1000 * 60) < 60){

@@ -9,6 +9,7 @@ use App\Entity\Users;
 use App\Form\UsersType;
 use App\Repository\UsersRepository;
 use App\Repository\DiscussionRepository;
+use App\Repository\NotificationRepository;
 use App\Service\FileUploader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,6 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\User\User;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints\Url;
 
 class DiscussionController extends AbstractController
 {
@@ -53,7 +55,7 @@ class DiscussionController extends AbstractController
             $photoFile = $form->get('photo')->getData();
             if($photoFile){
                 $photoFileName = $fileUploader->upload($photoFile);
-                $user->setPhoto('img/' . $photoFileName);
+                $user->setPhoto('/img/' . $photoFileName);
             }
 
             $entityManager = $this->getDoctrine()->getManager();
@@ -165,7 +167,7 @@ class DiscussionController extends AbstractController
     /**
      * @Route("/discussion/{id}", name="app_discussion")
      */
-    public function conversation(int $id, DiscussionRepository $discussion_repository): Response
+    public function conversation(int $id, DiscussionRepository $discussion_repository,Request $request, NotificationRepository $notification_repository, EntityManagerInterface $entityManager): Response
     {
         $discussion = $discussion_repository->find($id);
         if(!$discussion){
@@ -186,6 +188,16 @@ class DiscussionController extends AbstractController
             $nom = $discussion -> getNom();
         }
         
+        //Récup table notif puis foreach pour savoir tout les ligne ou url fini par l'id de la conv si oui supp
+
+        //$notification = $notification_repository->findAll();
+        $notifs = $notification_repository->findAll();
+        foreach($notifs as $notif){
+            if($notif->getUrl() == 'discussion/' . $id){
+                $notification_repository->remove($notif, true);
+            }
+        }
+
         return $this->render('discussion/index.html.twig', [
             'user' => $user,
             'titre' => $nom,
