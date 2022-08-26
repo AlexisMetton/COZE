@@ -2,10 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Photo;
-use App\Entity\Discussion;
-use App\Entity\Notification;
-use App\Entity\Users;
+Use App\Entity\Discussion;
 use App\Form\UsersType;
 use App\Repository\UsersRepository;
 use App\Repository\DiscussionRepository;
@@ -31,9 +28,23 @@ class DiscussionController extends AbstractController
         /** @var \App\Entity\Users $user */
         $user = $this->getUser();
 
+        $discussions = $user->getDiscussions();
+
+
+        for($i=0; $i<count($discussions); $i++){
+            $tmp = $i;
+            for($j=$i+1; $j<count($discussions); $j++){
+                if($discussions[$tmp]->getLastMessage()->getDateEnvoi() < $discussions[$j]->getLastMessage()->getDateEnvoi()){
+                    $tmp = $j;
+                }
+            }
+            $liste_discussion[] = $discussions[$tmp];
+            $discussions[$tmp] = $discussions[$i];
+        }
+
         return $this->render('accueil.html.twig', [
             'user' => $user,
-            'discussions' => $user->getDiscussions(),
+            'discussions' => $liste_discussion,
             'amis' => $user->getAmis(), 
             'notifications' => $user->getNotifications(), 
         ]);
@@ -141,26 +152,73 @@ class DiscussionController extends AbstractController
         if(!$start){
             return new JsonResponse('Erreur lors de la demande ajax');
         }
+        for($i=0; $i<count($discussions); $i++){
+            $tmp = $i;
+            for($j=$i+1; $j<count($discussions); $j++){
+                if($discussions[$tmp]->getLastMessage()->getDateEnvoi() < $discussions[$j]->getLastMessage()->getDateEnvoi()){
+                    $tmp = $j;
+                }
+            }
+            $liste_discussion[] = $discussions[$tmp];
+            $discussions[$tmp] = $discussions[$i];
+        }
         $idx = 0;
-        for($i = 0; $i < count($discussions);$i++){
-            if(!$discussions[$i] -> hasMessage()){
+        for($i = 0; $i < count($liste_discussion);$i++){
+            if(!$liste_discussion[$i] -> hasAnyMessage()){
                 $message = '';
                 $heure_message = '';
             }else{
-                $message = $discussions[$i]->getMessages()[count($discussions[$i]->getMessages()) - 1]->getMessage();
-                $heure_message = $discussions[$i]->getMessages()[count($discussions[$i]->getMessages()) - 1]->getDateEnvoi();
+                $message = $liste_discussion[$i]->getMessages()[count($liste_discussion[$i]->getMessages()) - 1]->getMessage();
+                $heure_message = $liste_discussion[$i]->getMessages()[count($liste_discussion[$i]->getMessages()) - 1]->getDateEnvoi();
             }
-            if(!$discussions[$i]->getNom()){
-                foreach($discussions[$i]->getMembres() as $membre){
+            if(!$liste_discussion[$i]->getNom()){
+                foreach($liste_discussion[$i]->getMembres() as $membre){
                     if ($membre->getUsername() != $user->getUsername()){
                         $nom = $membre->getUsername();
                     }
                 }
             }else{
-                $nom = $discussions[$i] -> getNom();
+                $nom = $liste_discussion[$i] -> getNom();
             }
-            $jsonData[$idx++] = ['id' => $discussions[$i] -> getId(), 'nom' => $nom, 'photo' => $discussions[$i]->getPhoto(), 'message' => $message, 'date_envoi' => $heure_message];
+            $jsonData[$idx++] = ['id' => $liste_discussion[$i] -> getId(), 'nom' => $nom, 'photo' => $liste_discussion[$i]->getPhoto(), 'message' => $message, 'date_envoi' => $heure_message];
         }
+        return new JsonResponse($jsonData);
+    }
+
+     /**
+     * @Route("/discussion/recuperer", name="recuperer_discussion")
+     */
+    public function recupererDiscussion(Request $request, DiscussionRepository $discussion_repository):JsonResponse
+    {
+        /** @var \App\Entity\Users $user */
+        $user = $this->getUser();
+        $idDiscussion = $request->request->get('id');
+        if(!$idDiscussion){
+            return new JsonResponse('Erreur ajax!');
+        }
+        $discussion = $discussion_repository->find($idDiscussion);
+        if(!$discussion){
+            return new JsonResponse('Cette discussion n\'existe pas!');
+        }
+        
+        if(!$discussion -> hasAnyMessage()){
+            $message = '';
+            $heure_message = '';
+        }else{
+            $message = $discussion->getMessages()[count($discussion->getMessages()) - 1]->getMessage();
+            $heure_message = $discussion->getMessages()[count($discussion->getMessages()) - 1]->getDateEnvoi();
+        }
+        if(!$discussion->getNom()){
+            foreach($discussion->getMembres() as $membre){
+                if ($membre->getUsername() != $user->getUsername()){
+                    $nom = $membre->getUsername();
+                }
+            }
+        }else{
+            $nom = $discussion -> getNom();
+        }
+        $jsonData = ['nom' => $nom, 'photo' => $discussion->getPhoto()];
+        
         return new JsonResponse($jsonData);
     }
 
