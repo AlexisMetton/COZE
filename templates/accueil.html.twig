@@ -1,11 +1,15 @@
 {% extends 'base.html.twig' %}
 
 {% block javascripts %}
+    <script type="application/json" id="user-username">
+        {{ user.getUsername() | json_encode(constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG'))|raw }}
+    </script>
     <script type="application/json" id="mercure-url">
         {{ mercure('https://message')|json_encode(constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG'))|raw }}
     </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
+    <script src="{{ asset('js/date_diff.js') }}"></script>
     <script src="{{ asset('js/barre.js') }}"></script>
     <script src="{{ asset('js/reponse_notification.js') }}" defer></script>
     <script src="{{ asset('js/affichage_discussion.js') }}" defer></script>
@@ -56,11 +60,14 @@
         #liste_amis{flex-grow:1; color:rgb(120,120,120)}
         .photo_amis{height:65px; margin-right:10px}
         .ami{display:flex; justify-content:center;padding : 10px;cursor:pointer; color:rgb(120,120,120); align-items:center}
+        .amii{text-decoration:none; color:black}
         #deconnection{height:50px;width:50px; margin : 20px 0}
         #lienmodif{width: clamp(30px, 100%, 100px);margin-top: 20px;}
         #resultats{display:flex;flex-direction: column;align-items: center;}
-        .photo{width: 40px}
-        .user{margin-top: 20px; border-radius: 30px;flex-wrap: wrap;  width: 14%;display: flex; flex-direction: row; justify-content: center; align-items: center; background-color: #549956;justify-content: space-around}
+        .photo{width: 40px; grid-column:1/4; grid-row: 1;}
+        .username{grid-column:4/4; grid-row: 1;}
+        .amis{grid-column:3/4; grid-row: 3;}
+        .user{margin-top: 20px; border-radius: 30px;  width: 20%;display: grid;  justify-content: center; align-items: center; background-color: #549956;justify-content: space-around}
         .aucun{margin-top: 20px; border-radius: 30px; width: 20%;display: flex; flex-direction: row; justify-content: center; align-items: center; background-color: #549956;justify-content: space-around}
         @media  screen and (max-width:666px) {
             #menu_lateral{width:30vw;}

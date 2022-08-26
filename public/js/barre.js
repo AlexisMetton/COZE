@@ -1,6 +1,8 @@
 let barre = document.getElementById('barreSearch');
  let aucun = $('.user').innerText = "aucun utilisateur";
  let result = document.getElementById('resultat');
+ const user_username = JSON.parse(document.getElementById("user-username").textContent);
+ let dami = document.getElementsByClassName('ami');
 
 $(document).ready(function(){
     $('#barreSearch').on('keyup',function(){
@@ -14,24 +16,32 @@ $(document).ready(function(){
                     url:newLocal,
                     data:{user: utilisateur},
                     success: function(data){
-                        let users =  data.filter(element => element.username);     
+                        let users =  data.filter(element => element.username);    
                         if(users != ""){ 
-                            let photo = document.createElement('img');
-                            photo.setAttribute('class', 'photo');
-                            photo.setAttribute('alt', 'photo de profil')
-                            photo.src = '../img/profil.svg';
-                            let resultat = document.createElement('div');
-                            resultat.setAttribute('id','resultat');
-                            users.forEach(element =>{
-                                suggestion+=`<div  class="user" onclick="ajout_amis(event)"><p>${element.username}</p></div>`; 
-                                document.getElementById('resultats').innerHTML=suggestion; 
-                               $("<img class='photo' src='../img/profil.svg'></img>").prependTo(".user");
-                                    
-                            }) 
+                                let resultat = document.createElement('div');
+                                resultat.setAttribute('id','resultat');
+                                users.forEach(element =>{
+                                    if(element.username!= user_username){
+                                        let exist = false
+                                        Object.values(dami).forEach(value =>{
+                                            if(value.lastElementChild.innerText == element.username){
+                                                exist = true;
+                                            }
+                                        })
+                                        if(!exist){
+                                            suggestion+=`<div id="user-`.concat(element.id,`"  class="user" onclick="ajout_amis(event)"><img class="photo" src="`,element.photo,`" alt="photo de profil"><p class="username">${element.username}</p></div>`); 
+                                        }else{
+                                            suggestion+=`<div id="user-`.concat(element.id,`"  class="user" onclick="deja_ami(event)"><img class="photo" src="`,element.photo,`" alt="photo de profil"><p class="username">${element.username}</p></div>`); 
+                                        }
+                                        document.getElementById('resultats').innerHTML=suggestion; 
+                                    }else{
+                                        suggestion;
+                                    }
+                                }) 
                         }else{
                             suggestion+=`<div class="aucun"><p>aucun resultat</p></div>`;
                             document.getElementById('resultats').innerHTML=suggestion;
-                        } 
+                        }               
                     }
                             /*if(element.username){
                             let user = document.createElement('p');
@@ -42,7 +52,7 @@ $(document).ready(function(){
                             $('#resultat').remove();
                             $('#resultat').append(aucun);
                             }*/
-            }) 
+        }) 
         }else{
             document.querySelectorAll('.user').forEach(element => {
                 element.innerHTML = suggestion;
@@ -52,14 +62,42 @@ $(document).ready(function(){
 })
 
 function ajout_amis(event){
-    if($('.amis').css("display","none")){
-        let ami= event.target
-        $(`<div class="amis"><a href=/ami/add/ class="ami"> ajouté en amis ?</a></div>`).appendTo(ami);
-        event.stopPropagation(ami)
+        $('.amis').remove();
+        let ami= "";
+        let point = ""
+        if(event.path.length==8){
+            ami= event.target.parentElement
+            point = event.srcElement.parentElement;
+             
+        }else{
+            ami= event.target
+            point = event.srcElement;
+           
+        }
+        $(`<div onclick= amis() class="amis"><a href="/ami/add/`.concat(point.getAttribute('id').split('-')[point.getAttribute('id').split('-').length -1],`" class="amii"> ajouté en ami ?</a></div>`)).appendTo(ami);
+        event.stopPropagation(event); 
+ 
+}
+
+function amis(){
+     window.alert('vous avez envoyé une demande d\'ami !!')
+}
+
+function deja_ami(event){
+    $('.amis').remove();
+    let ami= "";
+    let point = ""
+    if(event.path.length==8){
+        ami= event.target.parentElement
+        point = event.srcElement.parentElement;
+         
     }else{
-        $('.amis').css("display","none")
-    console.log(event)
+        ami= event.target
+        point = event.srcElement;
+       
     }
+    $(`<div class="amis">vous êtes deja ami</div>`).appendTo(ami);
+    event.stopPropagation(event); 
 }
 
 

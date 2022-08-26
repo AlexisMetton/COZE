@@ -34,7 +34,7 @@ class AmisController extends AbstractController
         $ami->addNotification($notification);
         $entityManager->persist($ami);
         $entityManager->flush();
-        return new Response($ami->getUsername() . " a été ajouté(e) dans les amis.");
+        return $this->redirectToRoute('accueil');
     }
 
     /**

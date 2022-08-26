@@ -209,7 +209,7 @@ class DiscussionController extends AbstractController
   /**
      * @Route("/recherche_utilisateur", name="recherche")
      */
-    public function recherche(Request $Request, UsersRepository $UserRepository) :JsonResponse{
+    public function recherche(Request $Request, UsersRepository $UserRepository, EntityManagerInterface $entityManager) :JsonResponse{
         $nomuser = $Request->request->get('user');
        if($nomuser){
           $users = $UserRepository->findByLike($nomuser);
@@ -218,13 +218,13 @@ class DiscussionController extends AbstractController
            return new JsonResponse(['aucun utilisateur']);
           }
            foreach($users as $user){
-               $jsondata[$idx++] = ['id' => $user -> getId(), "username" => $user->getUsername()];
+               $jsondata[$idx++] = ['id' => $user -> getId(), "username" => $user->getUsername(), 'photo' => $user->getPhoto()];
            }
            return new JsonResponse($jsondata);
        }else{
            return new JsonResponse("aucun utilisateur");
        }
 
-      
+     
    }
 }
