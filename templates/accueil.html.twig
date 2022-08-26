@@ -3,6 +3,7 @@
 {% block javascripts %}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="{{ asset('js/date_diff.js') }}" ></script>
+    <script src="{{ asset('js/barre.js') }}" defer></script>
     <script src="{{ asset('js/accueil.js') }}" ></script>
     <script type="application/json" id="user-username">
         {{ user.getUsername() | json_encode(constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG'))|raw }}
