@@ -6,6 +6,12 @@
             {{ mercure('https://message/' ~ discussion.getId())|json_encode(constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG'))|raw }}
         </script>
     {% endfor %}
+    <script type="application/json" id="mercure-url-notification-demande">
+        {{ mercure('https://notification/demande/' ~ user.getId())|json_encode(constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG'))|raw }}
+    </script>
+    <script type="application/json" id="mercure-url-notification-reponse">
+        {{ mercure('https://notification/reponse/' ~ user.getId())|json_encode(constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG'))|raw }}
+    </script>
     <script type="application/json" id="mercure-url-notification">
         {{ mercure('https://notification/' ~ user.getId())|json_encode(constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG'))|raw }}
     </script>
@@ -32,7 +38,7 @@
         #header_end{display:flex;align-items:center;position:relative;}
         #lien_notification{height:40px; width:40px;transition-duration:0.5s; cursor:pointer;margin-right: 4vw;}
         #lien_notification:hover{transform: scale(120%)}
-        #liste_notification{position:absolute;top:115%;max-height:0px;border:0; height:fit-content;min-width:400px;overflow:hidden;background-color:rgb(66,76,66); transition-duration:0.5s; right:calc(100% - 50px);}
+        #liste_notification{position:absolute;top:115%;max-height:0px;border:0; height:fit-content;min-width:400px;overflow:hidden;background-color:rgb(66,76,66); transition-duration:0.5s; right:calc(100% - 50px);z-index: 20;}
         .notification{display:grid; grid-template-columns : 1fr 2fr 2fr; align-items: center;justify-items: center;padding:10px 5px 10px 5px;cursor:pointer;}
         .notification:hover{transform:scale(1.05);}
         .logo_notification{grid-column:1/2; grid-row:1/3; height:50px; width : 50px; border-radius:50%;}
