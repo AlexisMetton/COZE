@@ -26,8 +26,8 @@
         body{min-width: 470px;}
         *{padding:0;margin:0;box-sizing:border-box; text-decoration:none;}
         header{display:flex; justify-content:space-between;;margin-bottom:100px; align-items:center; padding : 0 50px;}
-        header h1{font-size : 70px}
-        body{background-color:rgb(47,52,47); overflow-x:hidden; width:100vw}
+        header h1{font-size : 70px;text-shadow: 0px 0px 3px white; color:#25521c}
+        body{background-color:rgb(27 27 27); overflow-x:hidden; width:100vw}
         header a{text-decoration:none;}
         #recherche{display: flex;justify-content: center;color: whitesmoke;position:absolute;top:20px;left:50%;transform:translateX(-50%);}
         #recherche .barre {background: url('{{ asset('img/loupe 1.svg') }}') center no-repeat; background-size: contain;border: none;height: 40px;width: 40px;cursor: pointer;transition: transform 125ms;animation: retrecissement_recherche 625ms;color: transparent;}
@@ -45,11 +45,11 @@
         #nombre_notification{background-color:red; padding:5px; border-radius:50%;color:white; position:absolute; top:0; width:10px; height:10px; box-sizing:content-box; font-size:10px; text-align:center;}
         #case_menu_notification{display:none}
         #case_menu_notification:checked ~ #liste_notification{max-height:500px; border:3px ridge rgb(66,76,66) ;padding:20px; }
-        #lien_lateral{height:60px;width:60px;border-radius:50%;background-color:#549956; position:absolute; left:-30px;top:8px;}
+        #lien_lateral{height:60px;width:60px;border-radius:50%;background-color:#25521c; position:absolute; left:-30px;top:8px;}
         .overlay{height:100vh;background-color:rgb(20,20,20,0); transition-duration:1s;position:absolute;top:0;left:0;z-index:10;max-width:0;width:80vw;}
         #case_menu_lateral:checked ~ label .overlay{display:block; max-width:80vw; background-color:rgba(30,30,30,0.8)}
         #liste_conversations{display:flex;flex-direction:column; width:100vw;padding:5%;align-items:center}
-        .discussion{display:grid; align-items:center; grid-template-columns: 1fr 4fr 2fr; grid-auto-rows: 50px;margin-bottom:20px; background-color:#549956; border-radius:65px; color:white}
+        .discussion{display:grid; align-items:center; grid-template-columns: 1fr 4fr 2fr; grid-auto-rows: 50px;margin-bottom:20px; background-color:#25521c; border-radius:65px; color:white}
         .photo_discussion_conteneur{grid-column:1/2; grid-row:1/3; background-color:rgb(200,200,200); border-radius:50%; overflow:hidden; height: 100px; width : 100px; display:flex; justify-content:center; align-items:center;}
         .photo_discussion{width:95px; height:95px}
         .nom_discussion{grid-column:2/3;grid-row:1/2; padding : 0 5%;}
@@ -82,6 +82,7 @@
         #label_input{margin-left:7px;width:25px;}
         #label_input img{position:absolute;}
         #id_input{visibility:hidden;width:25px;}
+        header a h1 img {filter: drop-shadow(0 0 1px white);}
     </style>
 
     <header>
