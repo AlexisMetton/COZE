@@ -7,7 +7,14 @@ eventSource.onmessage = e => {
     let nouveauMessage = document.createElement('div');
     if(data['nom'] == user_username){
         nouveauMessage.setAttribute('class', 'message_user');
-        nouveauMessage.innerHTML = '<h3 class=\'nom_user\'>'.concat(data['nom'], '</h3><div class=\'message_info_user\'><div class=\'photo_conteneur\'><img class=\'photo\' src=\'', data['photo'], '\' alt=\'photo\'></div><p class=\'message_contenu_user\'>', data['message'], '</p></div><p class=\'date_message_user\' date=\'', Date(data["heure"]["date"]),'\' >A l\'instant</p></div>');
+        if(data['fichier'] == ''){
+            nouveauMessage.innerHTML = '<h3 class=\'nom_user\'>'.concat(data['nom'], '</h3><div class=\'message_info_user\'><div class=\'photo_conteneur\'><img class=\'photo\' src=\'', data['photo'], '\' alt=\'photo\'></div><div class=\'message_contenu_user\'><p>', data['message'], '</p></div></div><p class=\'date_message_user\' date=\'', Date(data["heure"]["date"]),'\' >A l\'instant</p></div>');
+        }else{
+            if(/image/.test(data['fichier'])){
+                nouveauMessage.innerHTML = '<h3 class=\'nom_user\'>'.concat(data['nom'], '</h3><div class=\'message_info_user\'><div class=\'photo_conteneur\'><img class=\'photo\' src=\'', data['photo'], '\' alt=\'photo\'></div><div class=\'message_contenu_user\'><img class=\'image_message\' alt=\'image message\' src=\'', data['fichier'], '\'><p>', data['message'], '</p></div></div><p class=\'date_message_user\' date=\'', Date(data["heure"]["date"]),'\' >A l\'instant</p></div>');
+            }
+            nouveauMessage.innerHTML = '<h3 class=\'nom_user\'>'.concat(data['nom'], '</h3><div class=\'message_info_user\'><div class=\'photo_conteneur\'><img class=\'photo\' src=\'', data['photo'], '\' alt=\'photo\'></div><div class=\'message_contenu_user\'><img class=\'image_message\' alt=\'image message\' src=\'', data['fichier'], '\'><p>', data['message'], '</p></div></div><p class=\'date_message_user\' date=\'', Date(data["heure"]["date"]),'\' >A l\'instant</p></div>');
+        }
         messages.append(nouveauMessage);
         messages.scrollTo(0, messages.scrollHeight);
         e.srcElement.value = "";
