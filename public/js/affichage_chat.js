@@ -32,3 +32,21 @@ eventSource.onmessage = e => {
     });
     messages.scrollTo(0, messages.scrollHeight);
 })()
+
+
+const url_notification = JSON.parse(document.getElementById('mercure-url-notification').textContent);
+const eventSourcenotification = new EventSource(url_notification);
+eventSourcenotification.onmessage = e=>{
+    data = JSON.parse(e.data);    
+    $.ajax({
+        type:'POST',
+        url:'/notification/supprimée',
+        dataType:'json',
+        data:{id:data['id']},
+        async:true,
+        success:function(dataAjax){
+            console.log(dataAjax);
+        }
+    }
+    )
+}
