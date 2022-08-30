@@ -31,6 +31,7 @@ class DiscussionController extends AbstractController
         $user = $this->getUser();
 
         $discussions = $user->getDiscussions();
+
         $liste_discussion = [];
         if(count($discussions) > 1){
             for($i=0; $i<count($discussions); $i++){
@@ -44,6 +45,7 @@ class DiscussionController extends AbstractController
                 }
                 $liste_discussion[] = $discussions[$tmp];
                 $discussions[$tmp] = $discussions[$i];
+
             }
         }else if(count($discussions) == 1){
             $liste_discussion[] = $discussions[0];
@@ -165,6 +167,7 @@ class DiscussionController extends AbstractController
             return new JsonResponse('Erreur lors de la demande ajax');
         }
 
+
         if(count($discussions) > 1){
             for($i=0; $i<count($discussions); $i++){
                 $tmp = $i;
@@ -173,6 +176,7 @@ class DiscussionController extends AbstractController
                         if($discussions[$tmp]->getLastMessage()->getDateEnvoi() < $discussions[$j]->getLastMessage()->getDateEnvoi()){
                             $tmp = $j;
                         }
+
                     }
                 }
                 $liste_discussion[] = $discussions[$tmp];
@@ -290,6 +294,7 @@ class DiscussionController extends AbstractController
             'titre' => $nom,
             'membres' => $discussion->getMembres(),
             'messages' => $discussion->getMessages(),
+            'discussion' => $discussion->getId(),
         ]);
     }
 
