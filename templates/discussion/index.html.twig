@@ -55,8 +55,8 @@
         ::-webkit-scrollbar {width: 5px;background-color: rgb(0 0 0);}
         .zone_input2{display:none}
         .smiley{width:34px; height:34px;}
-        #emoticones{display:none; width: 100vw;padding: 0 10%;height: 10vh;position: fixed;top: 90vh;justify-content: center;align-items: center; background-color:rgb(27,27,27)}
-        #emoticones img{width:20px; height:20px;margin-left:5px;margin-right:5px;}
+        #emoticones{justify-content: center;overflow-x:scroll;display:none; width: 100vw;padding: 0 10%;height: 10vh;position: fixed;top: 90vh;align-items: center; background-color:rgb(27,27,27)}
+        #emoticones img{width:40px; height:40px;margin-left:5px;margin-right:5px;}
         @media screen and (max-width:550px){
             .version2{display:flex;}
             .version1{display:none;}
@@ -89,6 +89,11 @@
         @media screen and (max-width:320px){
             .message{width:350px;}
             .message_user{width:350px;}
+        }
+        @media screen and (max-width:500px){
+            #emoticones{
+                justify-content: flex-start;
+            }
         }
 </style>
     <header class="version1">
@@ -134,15 +139,20 @@
             <div id='input_utilisateur'>
                 <textarea id='envoyer_message'></textarea>
             </div>
-            <div id='ajout_emote' onclick="emoticones()"><img class="smiley" src="{{ asset('img/smiley.png') }}"></div>
+            <div id='ajout_emote' onclick="emoticones()"><img class="smiley" src="{{ asset('img/sourire.png') }}"></div>
             <div id='plus_d_options'></div>
         </div>
         <div id="emoticones">
-            <img src="{{ asset('img/smiley.png') }}" onclick="sourire()">
-            <img src="{{ asset('img/smiley.png') }}">
-            <img src="{{ asset('img/smiley.png') }}">
-            <img src="{{ asset('img/smiley.png') }}">
-            <img src="{{ asset('img/smiley.png') }}">
+            <img src="{{ asset('img/sourire.png') }}" onclick="sourire()">
+            <img src="{{ asset('img/auréole.png') }}" onclick="auréole()">
+            <img src="{{ asset('img/bisous.png') }}" onclick="bisous()">
+            <img src="{{ asset('img/clinoeil.png') }}" onclick="clinoeil()">
+            <img src="{{ asset('img/coeur.png') }}" onclick="coeur()">
+            <img src="{{ asset('img/démon.png') }}" onclick="démon()">
+            <img src="{{ asset('img/joie.png') }}" onclick="joie()">
+            <img src="{{ asset('img/lunnette.png') }}" onclick="lunnette()">
+            <img src="{{ asset('img/peur.png') }}" onclick="peur()">
+            <img src="{{ asset('img/transpiration.png') }}" onclick="transpiration()">
         </div>
     </main>
 {% endblock %}
