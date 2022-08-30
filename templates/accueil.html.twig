@@ -1,6 +1,13 @@
 {% extends 'base.html.twig' %}
 
 {% block javascripts %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="{{ asset('js/date_diff.js') }}" ></script>
+    <script src="{{ asset('js/barre.js') }}" defer></script>
+    <script src="{{ asset('js/accueil.js') }}" ></script>
+    <script type="application/json" id="user-username">
+        {{ user.getUsername() | json_encode(constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG'))|raw }}
+    </script>
     {% for discussion in discussions %}
         <script type="application/json" class="mercure-url">
             {{ mercure('https://message/' ~ discussion.getId())|json_encode(constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG'))|raw }}
@@ -17,6 +24,13 @@
     </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="{{ asset('js/date_diff.js') }}" ></script>
+    <script>
+        const eventSourceDiscussion = new EventSource("{{ mercure('https://discussion/' ~ user.getId())|escape('js') }}");
+        eventSourceDiscussion.onmessage = event => {
+            data = JSON.parse(event.data);
+            new EventSource("{{ mercure('https://message/')}}" + data['id'] ).onmessage = update;
+        }
+    </script>
     <script src="{{ asset('js/reponse_notification.js') }}" defer></script>
     <script src="{{ asset('js/affichage_discussion.js') }}" defer></script>
 {% endblock %}
@@ -67,6 +81,12 @@
         .ami{display:flex; justify-content: flex-start;padding : 10px;cursor:pointer; color:rgb(120,120,120); align-items:center}
         #deconnection{height:50px;width:50px; margin : 20px 0}
         #lienmodif{width: clamp(30px, 100%, 100px);margin-top: 20px;}
+        #resultats{display:flex;flex-direction: column;align-items: center;}
+        .photo{width: 40px; grid-column:1/4; grid-row: 1;}
+        .username{grid-column:4/4; grid-row: 1;}
+        .amis{grid-column:3/4; grid-row: 3;}
+        .user{margin-top: 20px; border-radius: 30px;  width: 20%;display: grid;  justify-content: center; align-items: center; background-color: #549956;justify-content: space-around}
+        .aucun{margin-top: 20px; border-radius: 30px; width: 20%;display: flex; flex-direction: row; justify-content: center; align-items: center; background-color: #549956;justify-content: space-around}
         @media  screen and (max-width:666px) {
             #menu_lateral{width:30vw;}
             #case_menu_lateral:checked ~ #menu_lateral{left:70%;}
@@ -100,9 +120,10 @@
         #id_input{visibility:hidden;width:25px;}
         header a h1 img {filter: drop-shadow(0 0 1px white);}
     </style>
+  
 
     <header>
-        <a style="color:black;" href="{{ path('accueil') }}"><h1>C<span><img src="{{ asset('img/coze.svg') }}" height="48px"></span>ZE</h1></a>
+        <a style="color:black;" href="/ami/add/{id}"><h1>C<span><img src="{{ asset('img/coze.svg') }}" height="48px"></span>ZE</h1></a>
         <div id='header_end'>
             <label for='case_menu_notification' style='position:relative;'>
                 <img id='lien_notification' src="{{ asset('img/cloche COZE.svg') }}" alt='lien vers les notifications'>
@@ -150,48 +171,53 @@
         <div id="recherche">
             <input class="barre" type="text" name="text" id="barreSearch">
         </div>
+        <div id="resultats"></div>
         <input type='checkbox' id='case_menu_lateral'>
         <label for='case_menu_lateral'>
             <div class='overlay'></div>
         </label>
         <div id='liste_conversations'>
             {% set affichage = 0 %}
-            {% for discussion in discussions %}
-                {% if discussion.hasAnyMessage() and affichage < 3 %}
-                    {% set affichage = affichage + 1 %}
-                    <a href="{{ 'discussion/' ~ discussion.getId()}}"class='discussion'>
-                        <div class='photo_discussion_conteneur'>
-                        {% if not discussion.getPhoto() is empty %}
-                            <img class='photo_discussion' src='{{ asset(discussion.getPhoto()) }}' alt='photo_discussion'>
-                        {% else %}
-                            {% for membre in discussion.getMembres() %}
-                                {% if not membre.getUsername() is same as(user.getUsername()) %}
-                                    <img class='photo_discussion' src='{{ asset(membre.getPhoto()) }}' alt='photo_discussion'>
-                                {% endif %}
-                            {% endfor %}
-                        {% endif %}
-                        </div>
-                        {% if not discussion.getNom() is empty%}
-                            <h3 class='nom_discussion'>{{ discussion.getNom() }}</h3>
-                        {% else %}
-                            {% for membre in discussion.getMembres() %}
-                                {% if not membre.getUsername() is same as(user.getUsername()) %}
-                                    <h3 class='nom_discussion'>{{ membre.getUsername }}</h3>
-                                {% endif %}
-                            {% endfor %}
-                        {% endif %}
-                        {% if not discussion.getMessages() is empty %}
-                            <p class='dernier_message'>{{ (discussion.getMessages() | last).getMessage() }}</p>
-                            <p class='date_dernier_message'  date="{{ (discussion.getMessages() | last).getDateEnvoi() | date}}">{{ (discussion.getMessages() | last).getDateEnvoi() | date}}</p>
-                        {% endif %}
-                    </a>
-                {% endif %}
-            {% endfor %}
-            <div id='plus_discussion'>
-                <div class='barre_horizontale'></div>
-                    <p>Plus&nbsp;de&nbsp;conversation</p>
-                <div class='barre_horizontale'></div>
-            </div>
+            {% if discussions is empty %}
+                <p id='vide'>Aucune discussions</p>
+            {% else %}
+                {% for discussion in discussions %}
+                    {% if discussion.hasAnyMessage() and affichage < 3 %}
+                        {% set affichage = affichage + 1 %}
+                        <a href="{{ 'discussion/' ~ discussion.getId()}}"class='discussion'>
+                            <div class='photo_discussion_conteneur'>
+                            {% if not discussion.getPhoto() is empty %}
+                                <img class='photo_discussion' src='{{ asset(discussion.getPhoto()) }}' alt='photo_discussion'>
+                            {% else %}
+                                {% for membre in discussion.getMembres() %}
+                                    {% if not membre.getUsername() is same as(user.getUsername()) %}
+                                        <img class='photo_discussion' src='{{ asset(membre.getPhoto()) }}' alt='photo_discussion'>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                            </div>
+                            {% if not discussion.getNom() is empty%}
+                                <h3 class='nom_discussion'>{{ discussion.getNom() }}</h3>
+                            {% else %}
+                                {% for membre in discussion.getMembres() %}
+                                    {% if not membre.getUsername() is same as(user.getUsername()) %}
+                                        <h3 class='nom_discussion'>{{ membre.getUsername }}</h3>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                            {% if not discussion.getMessages() is empty %}
+                                <p class='dernier_message'>{{ (discussion.getMessages() | last).getMessage() }}</p>
+                                <p class='date_dernier_message'  date="{{ (discussion.getMessages() | last).getDateEnvoi() | date}}">{{ (discussion.getMessages() | last).getDateEnvoi() | date}}</p>
+                            {% endif %}
+                        </a>
+                    {% endif %}
+                {% endfor %}
+                <div id='plus_discussion'>
+                    <div class='barre_horizontale'></div>
+                        <p>Plus&nbsp;de&nbsp;conversation</p>
+                    <div class='barre_horizontale'></div>
+                </div>
+            {% endif %}
         </div>
 
         <div id='menu_lateral'>
@@ -216,3 +242,4 @@
         </div>
     </main>
 {% endblock %}
+

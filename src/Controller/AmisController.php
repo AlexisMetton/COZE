@@ -38,10 +38,13 @@ class AmisController extends AbstractController
         $entityManager->persist($ami);
         $entityManager->flush();
 
+
         $update = new Update('https://notification/demande/'.$notification->getUserId()[0]->getId(),json_encode(["id" => $notification->getId(), 'photo' => $user->getPhoto(), 'message' => $notification->getMessage(), 'type' => $notification->getType()]));
         $hub->publish($update);
 
-        return new Response($ami->getUsername() . " a été ajouté(e) dans les amis.");
+
+        return $this->redirectToRoute('accueil');
+
     }
 
     /**

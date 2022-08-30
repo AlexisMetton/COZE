@@ -17,6 +17,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\User\User;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints\Url;
+use Symfony\Component\Mercure\HubInterface;
+use Symfony\Component\Mercure\Update;
 
 class DiscussionController extends AbstractController
 {
@@ -30,18 +32,23 @@ class DiscussionController extends AbstractController
 
         $discussions = $user->getDiscussions();
 
+        $liste_discussion = [];
+        if(count($discussions) > 1){
+            for($i=0; $i<count($discussions); $i++){
+                $tmp = $i;
+                for($j=$i+1; $j<count($discussions); $j++){
+                    if($discussions[$tmp] ->getLastMessage() != null && $discussions[$j] ->getLastMessage() != null){
+                        if($discussions[$tmp]->getLastMessage()->getDateEnvoi() < $discussions[$j]->getLastMessage()->getDateEnvoi()){
+                            $tmp = $j;
+                        }
+                    }
+                }
+                $liste_discussion[] = $discussions[$tmp];
+                $discussions[$tmp] = $discussions[$i];
 
-        for($i=0; $i<count($discussions); $i++){
-            $tmp = $i;
-            for($j=$i+1; $j<count($discussions); $j++){
-                if($discussions[$tmp]->hasAnyMessage() && $discussions[$j]->hasAnyMessage()){
-                    if($discussions[$tmp]->getLastMessage()->getDateEnvoi() < $discussions[$j]->getLastMessage()->getDateEnvoi()){
-                    $tmp = $j;
-                }
-                }
             }
-            $liste_discussion[] = $discussions[$tmp];
-            $discussions[$tmp] = $discussions[$i];
+        }else if(count($discussions) == 1){
+            $liste_discussion[] = $discussions[0];
         }
 
         return $this->render('accueil.html.twig', [
@@ -91,7 +98,9 @@ class DiscussionController extends AbstractController
      */
     public function ClearAllDiscussion(DiscussionRepository $discussion_repository): Response
     {
-        foreach($discussion_repository->findAll() as $discussion){
+        /** @var \App\Entity\Users $user */
+        $user = $this->getUser();
+        foreach($user->getDiscussions() as $discussion){
             foreach($discussion->getMessages() as $message){
                 $discussion->removeMessage($message);
             }
@@ -108,7 +117,7 @@ class DiscussionController extends AbstractController
     /**
      * @Route("/discussion/create/{membre}", name="create_discussion")
      */
-    public function startDiscussion(int $membre, DiscussionRepository $discussion_repository, UsersRepository $user_repository, EntityManagerInterface $entityManager): Response
+    public function startDiscussion(HubInterface $hub, int $membre, DiscussionRepository $discussion_repository, UsersRepository $user_repository, EntityManagerInterface $entityManager): Response
     {
         /** @var \App\Entity\Users $user */
         $user = $this->getUser();
@@ -116,6 +125,8 @@ class DiscussionController extends AbstractController
         $discussion->addMembre($user_repository->find($user->getId()));
         $discussion->addMembre($user_repository->find($membre));
         $discussion_repository->add($discussion, true);
+        $update = new Update('https://discussion/'.$membre ,json_encode(["id" => $discussion->getId()]));
+        $hub->publish($update);
 
         return $this->redirectToRoute('app_discussion', ['id' => $discussion->getId()]);
     }
@@ -154,18 +165,24 @@ class DiscussionController extends AbstractController
         if(!$start){
             return new JsonResponse('Erreur lors de la demande ajax');
         }
-        for($i=0; $i<count($discussions); $i++){
-            $tmp = $i;
-            for($j=$i+1; $j<count($discussions); $j++){
-                if($discussions[$tmp]->hasAnyMessage() && $discussions[$j]->hasAnyMessage()){
-                    if($discussions[$tmp]->getLastMessage()->getDateEnvoi() < $discussions[$j]->getLastMessage()->getDateEnvoi()){
-                    $tmp = $j;
+
+
+        if(count($discussions) > 1){
+            for($i=0; $i<count($discussions); $i++){
+                $tmp = $i;
+                for($j=$i+1; $j<count($discussions); $j++){
+                    if($discussions[$tmp] ->getLastMessage() != null && $discussions[$j] ->getLastMessage() != null){
+                        if($discussions[$tmp]->getLastMessage()->getDateEnvoi() < $discussions[$j]->getLastMessage()->getDateEnvoi()){
+                            $tmp = $j;
+                        }
+
                     }
                 }
+                $liste_discussion[] = $discussions[$tmp];
+                $discussions[$tmp] = $discussions[$i];
             }
-            $liste_discussion[] = $discussions[$tmp];
-            $discussions[$tmp] = $discussions[$i];
         }
+        
         $idx = 0;
         for($i = 0; $i < count($liste_discussion);$i++){
             if(!$liste_discussion[$i] -> hasAnyMessage()){
@@ -205,13 +222,6 @@ class DiscussionController extends AbstractController
             return new JsonResponse('Cette discussion n\'existe pas!');
         }
         
-        if(!$discussion -> hasAnyMessage()){
-            $message = '';
-            $heure_message = '';
-        }else{
-            $message = $discussion->getMessages()[count($discussion->getMessages()) - 1]->getMessage();
-            $heure_message = $discussion->getMessages()[count($discussion->getMessages()) - 1]->getDateEnvoi();
-        }
         if(!$discussion->getNom()){
             foreach($discussion->getMembres() as $membre){
                 if ($membre->getUsername() != $user->getUsername()){
@@ -221,7 +231,16 @@ class DiscussionController extends AbstractController
         }else{
             $nom = $discussion -> getNom();
         }
-        $jsonData = ['nom' => $nom, 'photo' => $discussion->getPhoto()];
+        if(!$discussion -> getPhoto()){
+            $photo = $discussion ->getPhoto();
+        }else{
+            foreach($discussion->getMembres() as $membre){
+                if ($membre->getUsername() != $user->getUsername()){
+                    $photo = $membre->getPhoto();
+                }
+            }
+        }
+        $jsonData = ['nom' => $nom, 'photo' => $photo];
         
         return new JsonResponse($jsonData);
     }
@@ -267,5 +286,27 @@ class DiscussionController extends AbstractController
             'messages' => $discussion->getMessages(),
             'discussion' => $discussion->getId(),
         ]);
-}    
+    }
+
+  /**
+     * @Route("/recherche_utilisateur", name="recherche")
+     */
+    public function recherche(Request $Request, UsersRepository $UserRepository, EntityManagerInterface $entityManager) :JsonResponse{
+        $nomuser = $Request->request->get('user');
+       if($nomuser){
+          $users = $UserRepository->findByLike($nomuser);
+          $idx=0;
+          if(!$users){
+           return new JsonResponse(['aucun utilisateur']);
+          }
+           foreach($users as $user){
+               $jsondata[$idx++] = ['id' => $user -> getId(), "username" => $user->getUsername(), 'photo' => $user->getPhoto()];
+           }
+           return new JsonResponse($jsondata);
+       }else{
+           return new JsonResponse("aucun utilisateur");
+       }
+
+     
+   }
 }
