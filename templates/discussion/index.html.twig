@@ -16,6 +16,7 @@
     <script src="{{ asset('js/date_diff.js') }}"></script>
     <script src="{{ asset('js/affichage_chat.js') }}" defer></script>
     <script src="{{ asset('js/envoyer_message.js') }}" defer></script>
+    <script src="{{ asset('js/emoticones.js') }}" defer></script>
 {% endblock %}
 
 {% block body %}
@@ -43,7 +44,7 @@
         #creer_son_image_video{border-radius:50%;margin: 0 20px; background-color:rgb(255,255,255);width:34px; height:34px;}
         #input_utilisateur{height:40px; background-color:rgb(255,255,255); border-radius:50px;width:clamp(200px, 60%, 800px); display:flex;justify-content:center; align-items:center; position:relative;}
         #envoyer_message{width:100%; height:100%; background:rgba(0,0,0,0); border:none; padding:10px 20px; resize:none;}
-        #ajout_emote{border-radius:50%;margin: 0 20px; background-color:rgb(255,255,255);width:34px; height:34px;}
+        #ajout_emote{border-radius:50%;margin: 0 20px; background-color:rgb(255,255,255,0);width:34px; height:34px;}
         #plus_d_options{border-radius:50%; background-color:rgb(255,255,255);width:34px; height:34px;}
         ::-webkit-scrollbar{width:5px; background-color:rgb(20,20,20); }
         ::-webkit-scrollbar-track {box-shadow: inset 0 0 5px grey; border-radius: 10px;}
@@ -53,6 +54,9 @@
         ::-webkit-scrollbar-thumb {background-color: white; border-radius: 10px;}
         ::-webkit-scrollbar {width: 5px;background-color: rgb(0 0 0);}
         .zone_input2{display:none}
+        .smiley{width:34px; height:34px;}
+        #emoticones{display:none; width: 100vw;padding: 0 10%;height: 10vh;position: fixed;top: 90vh;justify-content: center;align-items: center; background-color:rgb(27,27,27)}
+        #emoticones img{width:20px; height:20px;margin-left:5px;margin-right:5px;}
         @media screen and (max-width:550px){
             .version2{display:flex;}
             .version1{display:none;}
@@ -70,6 +74,7 @@
         #ajout_fichier{width:28px; height:28px;margin: 0 10px;}
         #creer_son_image_video{width:28px; height:28px;margin: 0 10px;}
         #ajout_emote{width:28px; height:28px;margin: 0 10px;}
+        .smiley{width:28px; height:28px;}
         #plus_d_options{width:28px; height:28px;margin: 0 10px;}
         #zone_input{padding:0;}
         }
@@ -77,6 +82,7 @@
         #ajout_fichier{width:20px; height:20px;margin: 0 10px;}
         #creer_son_image_video{width:20px; height:20px;margin: 0 10px;}
         #ajout_emote{width:20px; height:20px;margin: 0 10px;}
+        .smiley{width:20px; height:20px;}
         #plus_d_options{width:20px; height:20px;margin: 0 10px;}
         #zone_input{padding:0;}
         }
@@ -128,8 +134,15 @@
             <div id='input_utilisateur'>
                 <textarea id='envoyer_message'></textarea>
             </div>
-            <div id='ajout_emote'></div>
+            <div id='ajout_emote' onclick="emoticones()"><img class="smiley" src="{{ asset('img/smiley.png') }}"></div>
             <div id='plus_d_options'></div>
+        </div>
+        <div id="emoticones">
+            <img src="{{ asset('img/smiley.png') }}" onclick="sourire()">
+            <img src="{{ asset('img/smiley.png') }}">
+            <img src="{{ asset('img/smiley.png') }}">
+            <img src="{{ asset('img/smiley.png') }}">
+            <img src="{{ asset('img/smiley.png') }}">
         </div>
     </main>
 {% endblock %}
