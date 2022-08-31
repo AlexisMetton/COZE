@@ -122,11 +122,19 @@
                             </div>
                             <div class='message_contenu'>
                                 {% if not message.getFichier() is empty %}
-                                    {% if '/image/' in message.getFichier() %}
+                                    {% if '/img/' in message.getFichier() %}
                                         <img src="{{message.getFichier()}}" alt='image fichier' class='image_message'>
+                                    {% elseif '/video/' in message.getFichier() %}
+                                        <video controls width="80%" style='align-self:center; padding:15px;'>
+                                            <source src="{{message.getFichier()}}" type="{{message.getTypeFichier()}}">
+                                        </video> 
+                                    {% elseif '/audio/' in message.getFichier() %}
+                                        <audio controls style='align-self:center; padding:15px;' src="{{message.getFichier()}}"></audio>
                                     {% endif %}
+                                    <p style='text-align:center'>{{ contenu[loop.index0] }}</p>
+                                {% else %}
+                                    <p>{{ message.getMessage() }}</p>
                                 {% endif %}
-                                <p>{{ contenu[loop.index0] }}</p>
                             </div>
                         </div>
                         <p class='date_message' date="{{ message.getDateEnvoi() | date}}" >{{ message.getDateEnvoi() | date()}}</p>
