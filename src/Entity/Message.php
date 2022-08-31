@@ -44,6 +44,11 @@ class Message
      */
     private $fichier;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $type_fichier;
+
 
     public function getId(): ?int
     {
@@ -106,6 +111,18 @@ class Message
     public function setFichier(string $fichier): self
     {
         $this->fichier = $fichier;
+
+        return $this;
+    }
+
+    public function getTypeFichier(): ?string
+    {
+        return $this->type_fichier;
+    }
+
+    public function setTypeFichier(?string $type_fichier): self
+    {
+        $this->type_fichier = $type_fichier;
 
         return $this;
     }

@@ -203,7 +203,11 @@
                             {% endfor %}
                         {% endif %}
                         {% if not discussion.getMessages() is empty %}
-                            <p class='dernier_message'>{{ (discussion.getMessages() | last).getMessage() }}</p>
+                            {% if (discussion.getMessages() | last).getMessage() | length > 10 %}
+                                <p class='dernier_message'>{{ (discussion.getMessages() | last).getMessage() | slice(0,10) ~ '...'}}</p>
+                            {% else %}
+                                <p class='dernier_message'>{{ (discussion.getMessages() | last).getMessage() }}</p>
+                            {% endif %}
                             <p class='date_dernier_message'  date="{{ (discussion.getMessages() | last).getDateEnvoi() | date}}">{{ (discussion.getMessages() | last).getDateEnvoi() | date}}</p>
                         {% endif %}
                     </a>

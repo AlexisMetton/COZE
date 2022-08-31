@@ -46,17 +46,23 @@ class MessageController extends AbstractController
         $message->setMessage($request->request->get('message'));
         $message->setDateEnvoi(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
         $nom_fichier = '';
+        $type_fichier = '';
         if($fichier){
             if(preg_match('/video/', $fichier-> getClientMimeType())){
                 $nom_fichier = '/video/' . $receptionVideo -> upload($fichier);
+                $type_fichier = $fichier->getClientMimeType();
             }else if(preg_match('/audio/', $fichier-> getClientMimeType())){
                 $nom_fichier = '/audio/' . $receptionAudio -> upload($fichier);
+                $type_fichier = $fichier->getClientMimeType();
             }else if (preg_match('/image/', $fichier-> getClientMimeType())){
                 $nom_fichier = '/img/' . $fileUploader -> upload($fichier);
+                $type_fichier = $fichier->getClientMimeType();
             }else{
                 $nom_fichier = '/fichier/' . $receptionFichier->upload($fichier);
+                $type_fichier = $fichier->getClientMimeType();
             }
             $message->setFichier($nom_fichier);
+            $message->setTypeFichier($type_fichier);
         }
         $entityManager->persist($message);
         $entityManager->flush();
@@ -65,7 +71,7 @@ class MessageController extends AbstractController
         $entityManager->flush();
         $jsonData = ['nom' => $user->getUsername(), 'photo' => $user->getPhoto()];
         
-        $update = new Update('https://message/'.$idDiscussion ,json_encode(["id" => $message->getId(), "discussion" => $idDiscussion, 'nom' => $user->getUsername(), 'photo' => $user->getPhoto(), 'message' => $request->request->get('message'), 'heure' => new \DateTime('now', new \DateTimeZone('Europe/Paris')), 'fichier' => $nom_fichier]));
+        $update = new Update('https://message/'.$idDiscussion ,json_encode(["id" => $message->getId(), "discussion" => $idDiscussion, 'nom' => $user->getUsername(), 'photo' => $user->getPhoto(), 'message' => $request->request->get('message'), 'heure' => new \DateTime('now', new \DateTimeZone('Europe/Paris')), 'fichier' => $nom_fichier, 'type_fichier' => $type_fichier]));
         $hub->publish($update);
 
         foreach ($discussion->getMembres() as $membre){

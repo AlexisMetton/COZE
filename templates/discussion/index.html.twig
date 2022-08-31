@@ -46,7 +46,7 @@
         .bouton_supprimer{cursor:pointer;position:absolute;left:calc(100% - 15px);top:-15px;width:30px; height:30px;background-color:red;border-radius:50%;padding:5px;color:white;}
         #ajout_fichier{border-radius:50%; background-color:rgb(255,255,255);width:34px; height:34px;display:flex;justify-content:center;align-items:center;}
         #creer_son_image_video{border-radius:50%;margin: 0 20px; background-color:rgb(255,255,255);width:34px; height:34px;}
-        #input_utilisateur{height:40px; background-color:rgb(255,255,255); border-radius:50px;width:clamp(200px, 60%, 800px); display:flex;justify-content:center; align-items:center; position:relative;}
+        #input_utilisateur{height:40px; background-color:rgb(255,255,255); border-radius:50px;width:clamp(150px, 50%, 800px); display:flex;justify-content:center; align-items:center; position:relative;}
         #envoyer_message{width:100%; height:100%; background:rgba(0,0,0,0); border:none; padding:10px 20px; resize:none;}
         #ajout_emote{border-radius:50%;margin: 0 20px; background-color:rgb(255,255,255);width:34px; height:34px;}
         #plus_d_options{border-radius:50%; background-color:rgb(255,255,255);width:34px; height:34px;}
@@ -111,8 +111,8 @@
                             </div>
                             <div class='message_contenu'>
                                 {% if not message.getFichier() is empty %}
-                                    {% if message.getFichier() | preg_match('/image/') %}
-                                        <img src="{{message.getFichier()}}" alt='image fichier' class='image_fichier'>
+                                    {% if '/image/' in message.getFichier() %}
+                                        <img src="{{message.getFichier()}}" alt='image fichier' class='image_message'>
                                     {% endif %}
                                 {% endif %}
                                 <p>{{ message.getMessage() }}</p>
@@ -129,12 +129,19 @@
                             </div>
                             <div class='message_contenu_user'>
                                 {% if not message.getFichier() is empty %}
-                                    <p>bla</p>
-                                    {% if message.getFichier() | preg_match('/image/') %}
-                                        <img src="{{message.getFichier()}}" alt='image fichier' class='image_fichier'>
+                                    {% if '/img/' in message.getFichier() %}
+                                        <img src="{{message.getFichier()}}" alt='image fichier' class='image_message'>
+                                    {% elseif '/video/' in message.getFichier() %}
+                                        <video controls width="80%" style='align-self:center; padding:15px;'>
+                                            <source src="{{message.getFichier()}}" type="{{message.getTypeFichier()}}">
+                                        </video> 
+                                    {% elseif '/audio/' in message.getFichier() %}
+                                        <audio controls style='align-self:center; padding:15px;' src="{{message.getFichier()}}"></audio>
                                     {% endif %}
+                                    <p style='text-align:center'>{{ message.getMessage() }}</p>
+                                {% else %}
+                                    <p>{{ message.getMessage() }}</p>
                                 {% endif %}
-                                <p>{{ message.getMessage() }}</p>
                             </div>
                         </div>
                         <p class='date_message_user' date="{{ message.getDateEnvoi() | date}}" >{{ message.getDateEnvoi() | date}}</p>
