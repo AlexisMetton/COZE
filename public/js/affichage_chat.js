@@ -40,6 +40,8 @@ eventSource.onmessage = e => {
     Object.entries(messages.children).forEach(entry => {
         const [key, value] = entry;
         value.lastElementChild.innerText = date_diff(new Date(value.lastElementChild.innerText));
+
+        value.firstElementChild.nextElementSibling.lastElementChild = new DOMParser().parseFromString(value.firstElementChild.nextElementSibling.lastElementChild.innerText, "text/html");
     });
     messages.scrollTo(0, messages.scrollHeight);
 })()

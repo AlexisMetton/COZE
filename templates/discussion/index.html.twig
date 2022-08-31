@@ -16,6 +16,7 @@
     <script src="{{ asset('js/date_diff.js') }}"></script>
     <script src="{{ asset('js/affichage_chat.js') }}" defer></script>
     <script src="{{ asset('js/envoyer_message.js') }}" defer></script>
+    <script src="{{ asset('js/emoticones.js') }}" defer></script>
 {% endblock %}
 
 {% block body %}
@@ -48,7 +49,7 @@
         #creer_son_image_video{border-radius:50%;margin: 0 20px; background-color:rgb(255,255,255);width:34px; height:34px;}
         #input_utilisateur{height:40px; background-color:rgb(255,255,255); border-radius:50px;width:clamp(150px, 50%, 800px); display:flex;justify-content:center; align-items:center; position:relative;}
         #envoyer_message{width:100%; height:100%; background:rgba(0,0,0,0); border:none; padding:10px 20px; resize:none;}
-        #ajout_emote{border-radius:50%;margin: 0 20px; background-color:rgb(255,255,255);width:34px; height:34px;}
+        #ajout_emote{border-radius:50%;margin: 0 20px; background-color:rgb(255,255,255,0);width:34px; height:34px;}
         #plus_d_options{border-radius:50%; background-color:rgb(255,255,255);width:34px; height:34px;}
         .image_bouton{width:70%;height:70%; filter:brightness(0)}
         ::-webkit-scrollbar{width:5px; background-color:rgb(20,20,20); }
@@ -59,6 +60,9 @@
         ::-webkit-scrollbar-thumb {background-color: white; border-radius: 10px;}
         ::-webkit-scrollbar {width: 5px;background-color: rgb(0 0 0);}
         .zone_input2{display:none}
+        .smiley{width:34px; height:34px;}
+        #emoticones{justify-content: center;overflow-x:scroll;display:none; width: 100vw;padding: 0 10%;height: 10vh;position: fixed;top: 90vh;align-items: center; background-color:rgb(27,27,27)}
+        #emoticones img{width:40px; height:40px;margin-left:5px;margin-right:5px;}
         @media screen and (max-width:550px){
             .version2{display:flex;}
             .version1{display:none;}
@@ -76,6 +80,7 @@
         #ajout_fichier{width:28px; height:28px;margin: 0 10px;}
         #creer_son_image_video{width:28px; height:28px;margin: 0 10px;}
         #ajout_emote{width:28px; height:28px;margin: 0 10px;}
+        .smiley{width:28px; height:28px;}
         #plus_d_options{width:28px; height:28px;margin: 0 10px;}
         #zone_input{padding:0;}
         }
@@ -83,12 +88,18 @@
         #ajout_fichier{width:20px; height:20px;margin: 0 10px;}
         #creer_son_image_video{width:20px; height:20px;margin: 0 10px;}
         #ajout_emote{width:20px; height:20px;margin: 0 10px;}
+        .smiley{width:20px; height:20px;}
         #plus_d_options{width:20px; height:20px;margin: 0 10px;}
         #zone_input{padding:0;}
         }
         @media screen and (max-width:320px){
             .message{width:350px;}
             .message_user{width:350px;}
+        }
+        @media screen and (max-width:500px){
+            #emoticones{
+                justify-content: flex-start;
+            }
         }
 </style>
     <header class="version1">
@@ -111,11 +122,19 @@
                             </div>
                             <div class='message_contenu'>
                                 {% if not message.getFichier() is empty %}
-                                    {% if '/image/' in message.getFichier() %}
+                                    {% if '/img/' in message.getFichier() %}
                                         <img src="{{message.getFichier()}}" alt='image fichier' class='image_message'>
+                                    {% elseif '/video/' in message.getFichier() %}
+                                        <video controls width="80%" style='align-self:center; padding:15px;'>
+                                            <source src="{{message.getFichier()}}" type="{{message.getTypeFichier()}}">
+                                        </video> 
+                                    {% elseif '/audio/' in message.getFichier() %}
+                                        <audio controls style='align-self:center; padding:15px;' src="{{message.getFichier()}}"></audio>
                                     {% endif %}
+                                    <p style='text-align:center'>{{ contenu[loop.index0] }}</p>
+                                {% else %}
+                                    <p>{{ message.getMessage() }}</p>
                                 {% endif %}
-                                <p>{{ message.getMessage() }}</p>
                             </div>
                         </div>
                         <p class='date_message' date="{{ message.getDateEnvoi() | date}}" >{{ message.getDateEnvoi() | date()}}</p>
@@ -138,7 +157,7 @@
                                     {% elseif '/audio/' in message.getFichier() %}
                                         <audio controls style='align-self:center; padding:15px;' src="{{message.getFichier()}}"></audio>
                                     {% endif %}
-                                    <p style='text-align:center'>{{ message.getMessage() }}</p>
+                                    <p style='text-align:center'>{{ contenu[loop.index0] }}</p>
                                 {% else %}
                                     <p>{{ message.getMessage() }}</p>
                                 {% endif %}
@@ -159,8 +178,21 @@
             <div id='input_utilisateur'>
                 <textarea id='envoyer_message'></textarea>
             </div>
-            <div id='ajout_emote'></div>
+            <div id='ajout_emote' onclick="emoticones()"><img class="smiley" src="{{ asset('img/sourire.png') }}"></div>
             <div id='plus_d_options'></div>
+        </div>
+        <div id="emoticones">
+            <img src="{{ asset('img/croix.svg') }}" onclick="fermer()">
+            <img src="{{ asset('img/sourire.png') }}" onclick="sourire()">
+            <img src="{{ asset('img/auréole.png') }}" onclick="auréole()">
+            <img src="{{ asset('img/bisous.png') }}" onclick="bisous()">
+            <img src="{{ asset('img/clinoeil.png') }}" onclick="clinoeil()">
+            <img src="{{ asset('img/coeur.png') }}" onclick="coeur()">
+            <img src="{{ asset('img/démon.png') }}" onclick="démon()">
+            <img src="{{ asset('img/joie.png') }}" onclick="joie()">
+            <img src="{{ asset('img/lunnette.png') }}" onclick="lunnette()">
+            <img src="{{ asset('img/peur.png') }}" onclick="peur()">
+            <img src="{{ asset('img/transpiration.png') }}" onclick="transpiration()">
         </div>
     </main>
 {% endblock %}
