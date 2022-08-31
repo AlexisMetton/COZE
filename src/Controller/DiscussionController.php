@@ -128,7 +128,8 @@ class DiscussionController extends AbstractController
         $discussion_repository->add($discussion, true);
         $update = new Update('https://discussion/'.$membre ,json_encode(["id" => $discussion->getId()]));
         $hub->publish($update);
-
+        $update = new Update('https://discussion/'.$user->getId() ,json_encode(["id" => $discussion->getId()]));
+        $hub->publish($update);
         return $this->redirectToRoute('app_discussion', ['id' => $discussion->getId()]);
     }
 
@@ -202,7 +203,16 @@ class DiscussionController extends AbstractController
             }else{
                 $nom = $liste_discussion[$i] -> getNom();
             }
-            $jsonData[$idx++] = ['id' => $liste_discussion[$i] -> getId(), 'nom' => $nom, 'photo' => $liste_discussion[$i]->getPhoto(), 'message' => $message, 'date_envoi' => $heure_message];
+            if($liste_discussion[$i] -> getPhoto()){
+                $photo = $liste_discussion[$i] ->getPhoto();
+            }else{
+                foreach($liste_discussion[$i]->getMembres() as $membre){
+                    if ($membre->getUsername() != $user->getUsername()){
+                        $photo = $membre->getPhoto();
+                    }
+                }
+            }
+            $jsonData[$idx++] = ['id' => $liste_discussion[$i] -> getId(), 'nom' => $nom, 'photo' => $photo, 'message' => $message, 'date_envoi' => $heure_message];
         }
         return new JsonResponse($jsonData);
     }
@@ -232,7 +242,7 @@ class DiscussionController extends AbstractController
         }else{
             $nom = $discussion -> getNom();
         }
-        if(!$discussion -> getPhoto()){
+        if($discussion -> getPhoto()){
             $photo = $discussion ->getPhoto();
         }else{
             foreach($discussion->getMembres() as $membre){

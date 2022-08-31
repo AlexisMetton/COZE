@@ -25,3 +25,15 @@ services:
     App\Service\FileUploader:
         arguments:
             $targetDirectory: '%kernel.project_dir%/public/img'
+
+    App\Service\ReceptionFichier:
+        arguments:
+            $targetDirectory: '%kernel.project_dir%/public/fichier'
+
+    App\Service\ReceptionAudio:
+        arguments:
+            $targetDirectory: '%kernel.project_dir%/public/audio'
+
+    App\Service\ReceptionVideo:
+        arguments:
+            $targetDirectory: '%kernel.project_dir%/public/video'

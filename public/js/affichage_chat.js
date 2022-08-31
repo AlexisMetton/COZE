@@ -7,7 +7,18 @@ eventSource.onmessage = e => {
     let nouveauMessage = document.createElement('div');
     if(data['nom'] == user_username){
         nouveauMessage.setAttribute('class', 'message_user');
-        nouveauMessage.innerHTML = '<h3 class=\'nom_user\'>'.concat(data['nom'], '</h3><div class=\'message_info_user\'><div class=\'photo_conteneur\'><img class=\'photo\' src=\'', data['photo'], '\' alt=\'photo\'></div><p class=\'message_contenu_user\'>', data['message'], '</p></div><p class=\'date_message_user\' date=\'', Date(data["heure"]["date"]),'\' >A l\'instant</p></div>');
+        if(data['fichier'] == ''){
+            nouveauMessage.innerHTML = '<h3 class=\'nom_user\'>'.concat(data['nom'], '</h3><div class=\'message_info_user\'><div class=\'photo_conteneur\'><img class=\'photo\' src=\'', data['photo'], '\' alt=\'photo\'></div><div class=\'message_contenu_user\'><p>', data['message'], '</p></div></div><p class=\'date_message_user\' date=\'', Date(data["heure"]["date"]),'\' >A l\'instant</p></div>');
+        }else{
+            if(/image/.test(data['fichier'])){
+                nouveauMessage.innerHTML = '<h3 class=\'nom_user\'>'.concat(data['nom'], '</h3><div class=\'message_info_user\'><div class=\'photo_conteneur\'><img class=\'photo\' src=\'', data['photo'], '\' alt=\'photo\'></div><div class=\'message_contenu_user\'><img class=\'image_message\' alt=\'image message\' src=\'', data['fichier'], '\'><p style="text-align:center;">', data['message'], '</p></div></div><p class=\'date_message_user\' date=\'', Date(data["heure"]["date"]),'\' >A l\'instant</p></div>');
+            }else if(/video/.test(data['fichier'])){
+                nouveauMessage.innerHTML = '<h3 class=\'nom_user\'>'.concat(data['nom'], '</h3><div class=\'message_info_user\'><div class=\'photo_conteneur\'><img class=\'photo\' src=\'', data['photo'], '\' alt=\'photo\'></div><div class=\'message_contenu_user\'><video controls width="80%" style=\'align-self:center;padding:15px;\'><source src="', data['fichier'],'" type"',data['type_fichier'],'"></video><p style="text-align:center;">', data['message'], '</p></div></div><p class=\'date_message_user\' date=\'', Date(data["heure"]["date"]),'\' >A l\'instant</p></div>');
+            }else if(/audio/.test(data['fichier'])){
+                nouveauMessage.innerHTML = '<h3 class=\'nom_user\'>'.concat(data['nom'], '</h3><div class=\'message_info_user\'><div class=\'photo_conteneur\'><img class=\'photo\' src=\'', data['photo'], '\' alt=\'photo\'></div><div class=\'message_contenu_user\'><audio controls style="align-self:center; padding:15px;" src="',data['fichier'],'"></audio><p style="text-align:center;">', data['message'], '</p></div></div><p class=\'date_message_user\' date=\'', Date(data["heure"]["date"]),'\' >A l\'instant</p></div>');
+            }
+            
+        }
         messages.append(nouveauMessage);
         messages.scrollTo(0, messages.scrollHeight);
         e.srcElement.value = "";

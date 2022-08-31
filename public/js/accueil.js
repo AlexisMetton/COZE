@@ -40,12 +40,19 @@ function update(e){
                     nouvelleDiscussion.append(dernierMessage);
                     let heureDernierMessage = document.createElement('p');
                     heureDernierMessage.setAttribute('class', 'date_dernier_message');
+                    heureDernierMessage.setAttribute('date', data['heure']['date']);
                     let date1 = new Date(data['heure']['date']);
                     heureDernierMessage.innerText = date_diff(date1);
                     nouvelleDiscussion.append(heureDernierMessage);
-                    if(liste_discussions.children.length < 4){
+                    if(document.getElementsByClassName('discussion').length % 3 == 0){
                         if(liste_discussions.firstElementChild.getAttribute('id') == 'vide'){
                             liste_discussions.firstElementChild.remove();
+                        }else if(document.getElementById('plus_discussion') == null){
+                            plusDeDiscussion = document.createElement('div');
+                            plusDeDiscussion.setAttribute('id', 'plus_discussion');
+                            plusDeDiscussion.innerHTML = '<div class=\'barre_horizontale\'></div><p>Plus&nbsp;de&nbsp;conversation&nbsp;</p><div class=\'barre_horizontale\'></div>';
+                            liste_discussions.append(plusDeDiscussion);
+                            liste_discussions.lastElementChild.previousElementSibling.remove();
                         }
                     }else if(liste_discussions.lastElementChild == plusDeDiscussion){
                         liste_discussions.lastElementChild.previousElementSibling.remove();
@@ -61,6 +68,7 @@ function update(e){
         const [key, value] = entry;
         value.lastElementChild.innerText = date_diff(new Date(value.lastElementChild.getAttribute('date')));
     });
+    return true;
 }
 
 function afficherPlus(e){
