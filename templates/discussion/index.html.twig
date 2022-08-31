@@ -114,7 +114,7 @@
                             <div class='photo_conteneur'>
                                 <img class='photo' src='{{ asset(message.getUserId().getPhoto()) }}' alt='photo_discussion'>
                             </div>
-                            <p class='message_contenu'>{{ message.getMessage() }}</p>
+                            <p class='message_contenu'>{{ contenu[loop.index0] }}</p>
                         </div>
                         <p class='date_message' date="{{ message.getDateEnvoi() | date}}" >{{ message.getDateEnvoi() | date()}}</p>
                     </div>
@@ -125,7 +125,7 @@
                             <div class='photo_conteneur'>
                                 <img class='photo' src='{{ asset(user.getPhoto()) }}' alt='photo_user'>
                             </div>
-                            <p class='message_contenu_user'>{{ message.getMessage() }}</p>
+                            <p class='message_contenu_user'>{{ contenu[loop.index0] }}</p>
                         </div>
                         <p class='date_message_user' date="{{ message.getDateEnvoi() | date}}" >{{ message.getDateEnvoi() | date}}</p>
                     </div>
@@ -143,6 +143,7 @@
             <div id='plus_d_options'></div>
         </div>
         <div id="emoticones">
+            <img src="{{ asset('img/croix.svg') }}" onclick="fermer()">
             <img src="{{ asset('img/sourire.png') }}" onclick="sourire()">
             <img src="{{ asset('img/auréole.png') }}" onclick="auréole()">
             <img src="{{ asset('img/bisous.png') }}" onclick="bisous()">

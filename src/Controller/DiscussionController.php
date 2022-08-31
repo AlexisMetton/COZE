@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 Use App\Entity\Discussion;
+use App\Entity\Message;
 use App\Form\UsersType;
 use App\Repository\UsersRepository;
 use App\Repository\DiscussionRepository;
@@ -276,7 +277,12 @@ class DiscussionController extends AbstractController
         foreach($notifs as $notif){
             if($notif->getUrl() == 'discussion/' . $id){
                 $notification_repository->remove($notif, true);
-            }
+            }           
+        }
+
+        foreach($discussion->getMessages() as $message){
+            $contenu[] = html_entity_decode($message->getMessage());
+
         }
 
         return $this->render('discussion/index.html.twig', [
@@ -285,6 +291,7 @@ class DiscussionController extends AbstractController
             'membres' => $discussion->getMembres(),
             'messages' => $discussion->getMessages(),
             'discussion' => $discussion->getId(),
+            'contenu' => $contenu
         ]);
     }
 
