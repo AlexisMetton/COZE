@@ -88,7 +88,7 @@ function ajout_amis(event){
             point = event.srcElement.parentElement;
            
         }
-        $(`<div onclick= amis() class="amis"><a href="/ami/add/`.concat(point.getAttribute('id').split('-')[point.getAttribute('id').split('-').length -1],`" class="amii"> ajouter en ami ?</a></div>`)).appendTo(ami);
+        $(`<div onclick= amis() class="amis"><a style="color:whitesmoke;" href="/ami/add/`.concat(point.getAttribute('id').split('-')[point.getAttribute('id').split('-').length -1],`" class="amii"> ajouter en ami </a></div>`)).appendTo(ami);
         event.stopPropagation(event); 
  
 }
@@ -110,7 +110,7 @@ function deja_ami(event){
         point = event.srcElement;
        
     }
-    $(`<div class="amis">vous êtes deja ami</div>`).appendTo(ami);
+    $(`<div class="amis">vous êtes déja ami</div>`).appendTo(ami);
     event.stopPropagation(event); 
 }
 
