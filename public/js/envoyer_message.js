@@ -7,7 +7,7 @@ envoie.addEventListener('keypress', envoyer);
 
 function envoyer(e){
     if (e.key === 'Enter'){
-        let message = envoie.value;
+        let message = envoie.value + ' ';
         envoie.value = '';
         e.preventDefault();
         let idDiscussion = window.location.href.split('/')[window.location.href.split('/').length - 1];

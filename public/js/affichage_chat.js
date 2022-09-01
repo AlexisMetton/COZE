@@ -27,7 +27,7 @@ eventSource.onmessage = e => {
     }else{
         nouveauMessage.setAttribute('class', 'message');
         if(data['fichier'] == ''){
-            nouveauMessage.innerHTML = '<h3 class=\'nom_user\'>'.concat(data['nom'], '</h3><div class=\'message_info_user\'><div class=\'photo_conteneur\'><img class=\'photo\' src=\'', data['photo'], '\' alt=\'photo\'></div><div class=\'message_contenu_user\'><p>', data['message'], '</p></div></div><p class=\'date_message_user\' date=\'', Date(data["heure"]["date"]),'\' >A l\'instant</p></div>');
+            nouveauMessage.innerHTML = '<h3 class=\'nom\'>'.concat(data['nom'], '</h3><div class=\'message_info\'><div class=\'photo_conteneur\'><img class=\'photo\' src=\'', data['photo'], '\' alt=\'photo\'></div><div class=\'message_contenu\'><p>', data['message'], '</p></div></div><p class=\'date_message\' date=\'', Date(data["heure"]["date"]),'\' >A l\'instant</p></div>');
         }else{
             if(/img/.test(data['fichier'])){
                 nouveauMessage.innerHTML = '<h3 class=\'nom\'>'.concat(data['nom'], '</h3><div class=\'message_info\'><div class=\'photo_conteneur\'><img class=\'photo\' src=\'', data['photo'], '\' alt=\'photo\'></div><div class=\'message_contenu\'><img class=\'image_message\' alt=\'image message\' src=\'', data['fichier'], '\'><p style="text-align:center;">', data['message'], '</p></div></div><p class=\'date_message\' date=\'', Date(data["heure"]["date"]),'\' >A l\'instant</p></div>');
@@ -38,10 +38,10 @@ eventSource.onmessage = e => {
             }else{ 
                 nouveauMessage.innerHTML = '<h3 class=\'nom\'>'.concat(data['nom'], '</h3><div class=\'message_info\'><div class=\'photo_conteneur\'><img class=\'photo\' src=\'', data['photo'], '\' alt=\'photo\'></div><div class=\'message_contenu\'><p style="text-align:center;">', data['message'], '</p></div></div><p class=\'date_message\' date=\'', Date(data["heure"]["date"]),'\' >A l\'instant</p></div>');
             }
+        }
         messages.append(nouveauMessage);
         messages.scrollTo(0, messages.scrollHeight);
         e.srcElement.value = "";
-        }
     }
     Object.entries(messages.children).forEach(entry => {
         const [key, value] = entry;

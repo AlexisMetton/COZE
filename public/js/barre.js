@@ -1,4 +1,4 @@
-let barre = document.getElementById('barreSearch');
+ let barre = document.getElementById('barreSearch');
  let aucun = $('.user').innerText = "aucun utilisateur";
  let result = document.getElementById('resultat');
  const user_username = JSON.parse(document.getElementById("user-username").textContent);
@@ -29,9 +29,9 @@ $(document).ready(function(){
                                             }
                                         })
                                         if(!exist){
-                                            suggestion+=`<div id="user-`.concat(element.id,`"  class="user" onclick="ajout_amis(event)"><img class="photo" src="`,element.photo,`" alt="photo de profil"><p class="username">${element.username}</p></div>`); 
+                                            suggestion+=`<div id="user-`.concat(element.id,`"  class="user" onclick="ajout_amis(event)"><img class="photo" src="`,element.photo,`" alt="photo de profil"><p style='margin-left:10px' class="username">${element.username}</p></div>`); 
                                         }else{
-                                            suggestion+=`<div id="user-`.concat(element.id,`"  class="user" onclick="deja_ami(event)"><img class="photo" src="`,element.photo,`" alt="photo de profil"><p class="username">${element.username}</p></div>`); 
+                                            suggestion+=`<div id="user-`.concat(element.id,`"  class="user" onclick="deja_ami(event)"><img class="photo" src="`,element.photo,`" alt="photo de profil"><p style='margin-left:10px' class="username">${element.username}</p></div>`); 
                                         }
                                         document.getElementById('resultats').innerHTML=suggestion; 
                                     }else{
@@ -39,7 +39,7 @@ $(document).ready(function(){
                                     }
                                 }) 
                         }else{
-                            suggestion+=`<div class="aucun"><p>aucun resultat</p></div>`;
+                            suggestion+=`<div class="aucun"><p>aucun&nbsp;resultat</p></div>`;
                             document.getElementById('resultats').innerHTML=suggestion;
                         }               
                     }

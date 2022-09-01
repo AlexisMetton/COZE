@@ -42,10 +42,11 @@
         header h1{font-size : 70px;text-shadow: 0px 0px 3px white; color:#25521c}
         body{background-color:rgb(27 27 27); overflow-x:hidden; width:100vw}
         header a{text-decoration:none;}
-        #recherche{display: flex;justify-content: center;color: whitesmoke;position:absolute;top:20px;left:50%;transform:translateX(-50%);}
+        #recherche{display: flex;flex-direction:column;align-items: center;color: whitesmoke;position:absolute;top:20px;left:50%;transform:translateX(-50%);}
         #recherche .barre {background: url('{{ asset('img/loupe 1.svg') }}') center no-repeat; background-size: contain;border: none;height: 40px;width: 40px;cursor: pointer;transition: transform 125ms;animation: retrecissement_recherche 625ms;color: transparent;text-align: center;border-radius: 10px;margin-left:10px;margin-right:10px}
         #recherche .barre:hover {transform: scale(120%);}
         #recherche .barre:focus {background: none;border: solid 1px rgb(255, 255, 255);height: 21px;width: 380px;color: whitesmoke;cursor: text;transform: scale(100%);animation: elargissement_recherche 500ms;}
+        #recherche .barre:focus ~ #resultats {display:flex;}
         @keyframes elargissement_recherche {from {width: 0px;} to {width: 380px;}}
         @keyframes retrecissement_recherche {from {background: none;border: solid 1px rgb(255, 255, 255);width: 380px;height: 21px;} 20% {background: none;border: solid 1px rgb(255, 255, 255);width: 380px;height: 21px;} to {background: none;border: solid 1px rgb(255, 255, 255);width: 0px;height: 21px;}}
         #header_end{display:flex;align-items:center;position:relative;}
@@ -81,12 +82,12 @@
         .ami{display:flex; justify-content: flex-start;padding : 10px;cursor:pointer; color:rgb(120,120,120); align-items:center}
         #deconnection{height:50px;width:50px; margin : 20px 0}
         #lienmodif{width: clamp(30px, 100%, 100px);margin-top: 20px;}
-        #resultats{display:flex;flex-direction: column;align-items: center;}
+        #resultats{display:none;flex-direction: column;align-items: center; padding:20px}
         .photo{width: 40px; grid-column:1/4; grid-row: 1;}
         .username{grid-column:4/4; grid-row: 1;}
         .amis{grid-column:3/4; grid-row: 3;}
-        .user{margin-top: 20px; border-radius: 30px;  width: 20%;display: grid;  justify-content: center; align-items: center; background-color: #549956;justify-content: space-around}
-        .aucun{margin-top: 20px; border-radius: 30px; width: 20%;display: flex; flex-direction: row; justify-content: center; align-items: center; background-color: #549956;justify-content: space-around}
+        .user{margin-bottom:3px;border-radius: 30px;width:380px;  padding : 10px;display: grid;  justify-content: center; align-items: center; background-color: #549956;}
+        .aucun{border-radius: 30px; padding : 10px;width:380px;display: flex; flex-direction: row; justify-content: center; align-items: center; background-color: #549956;}
         @media  screen and (max-width:666px) {
             #menu_lateral{width:30vw;}
             #case_menu_lateral:checked ~ #menu_lateral{left:70%;}
@@ -111,6 +112,7 @@
             header{padding:0 20px;}
             #nombre_notification{left:50%; top:-25px}
             #recherche .barre{width:90%;}
+            #resultats{width:90%;}
         }
         @media  screen and (max-width:320px) {
             .date_dernier_message{font-size:11px;padding:0%;}
@@ -170,8 +172,8 @@
     <main>
         <div id="recherche">
             <input class="barre" type="text" name="text" id="barreSearch">
+            <div id="resultats"></div>
         </div>
-        <div id="resultats"></div>
         <input type='checkbox' id='case_menu_lateral'>
         <label for='case_menu_lateral'>
             <div class='overlay'></div>
