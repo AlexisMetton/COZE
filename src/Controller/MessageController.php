@@ -39,6 +39,11 @@ class MessageController extends AbstractController
         if(!$idDiscussion){
             return new JsonResponse('Erreur à la demande Ajax');
         }
+        $id=0;
+        foreach($fichier as $file){
+            $jsonData[$id++] = $file->getClientMimeType();
+        }
+        return new JsonResponse($jsonData);
         $discussion = $discussion_repository->find($idDiscussion);
         $message = new Message();
         $message->setUserId($user);

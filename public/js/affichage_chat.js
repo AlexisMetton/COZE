@@ -85,7 +85,7 @@ var myRecorder = {
             myRecorder.objects.recorder.record();
         }).catch(function (err) {});
     },
-    stop: function (listObject) {
+    stop: function () {
         if (null !== myRecorder.objects.stream) {
             myRecorder.objects.stream.getAudioTracks()[0].stop();
         }
@@ -93,39 +93,37 @@ var myRecorder = {
             myRecorder.objects.recorder.stop();
 
             // Validate object
-            if (null !== listObject
-                    && 'object' === typeof listObject
-                    && listObject.length > 0) {
                 // Export the WAV file
                 myRecorder.objects.recorder.exportWAV(function (blob) {
                     var url = (window.URL || window.webkitURL)
                             .createObjectURL(blob);
+                    let fi = new File([blob], 'fichier');
+                    console.log(fi);
 
                     // Prepare the playback
-                    var audioObject = $('<audio controls></audio>')
-                            .attr('src', url);
-
-                    // Prepare the download link
-                    var downloadObject = $('<a>&#9660;</a>')
-                            .attr('href', url)
-                            .attr('download', new Date().toUTCString() + '.wav');
-
-                    // Wrap everything in a row
-                    var holderObject = $('<div class="row"></div>')
-                            .append(audioObject)
-                            .append(downloadObject)
-                            
+                    var audioObject = document.createElement('audio');
+                    audioObject.toggleAttribute('controls');
+                    audioObject.setAttribute('src', url);
 
                     // Append to the list
-                    listObject.append(holderObject);
+                    let separateur1 = document.createElement('div');
+                    separateur1.setAttribute('style', 'width:100%;');
+                    fichier = document.createElement('div');
+                    fichier.setAttribute('class', 'fichier-son');
+                    fichier.setAttribute('style', 'position:relative;')
+                    let supprimer = document.createElement('button');
+                    supprimer.setAttribute('class', 'bouton_supprimer');
+                    supprimer.innerText = 'X';
+                    fichier.prepend(supprimer);
+                    supprimer.addEventListener('click', supprimerFichier);
+                    input_fichier.insertAdjacentElement('beforebegin', fichier);
+                    input_fichier.insertAdjacentElement('beforebegin', separateur1);
+                    fichier.append(audioObject);
                 });
-            }
         }
     }
 };
 
-// Prepare the recordings list
-var listObject = $('#liste_message');
 
 // Prepare the record button
 $('[data-role="controls"] > button').click(function () {
@@ -141,7 +139,7 @@ $('[data-role="controls"] > button').click(function () {
         myRecorder.start();
     } else {
         $(this).attr('data-recording', '');
-        myRecorder.stop(listObject);
+        myRecorder.stop(document.getElementById('fichier-son'));
     }
 });
 

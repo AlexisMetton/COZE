@@ -14,6 +14,11 @@ function envoyer(e){
         let fichier = '';
         if (input_fichier.files[0]){
             fichier = input_fichier.files[0];
+        }else if(document.getElementsByClassName('fichier-son')){
+            let id= 0;
+            Object.values(document.getElementsByClassName('fichier-son')).forEach(value=>{
+                fichier[id++] = new File(value.getAttribute('blob'), 'son'+id);
+            });
         }
         let jsonData = new FormData();
         jsonData.append('id', idDiscussion);
@@ -30,8 +35,9 @@ function envoyer(e){
             processData: false,
             success:function(data){
                 envoie.value = '';
+                console.log(data);
                 if(fichier){
-                    supprimerFichier();
+                    supprimerFichier(e);
                 }
             }
         })
@@ -88,13 +94,21 @@ function chargementFichier(e){
     }
 }
 
-function supprimerFichier(){
+function supprimerFichier(e){
     input_fichier.value = '';
     let image_fichier = document.getElementById('image_fichier');
     if(image_fichier){
         URL.revokeObjectURL(image_fichier.getAttribute('src'));
     }
-    document.getElementById('fichier').remove();
+    if(document.getElementById('fichier')){
+        document.getElementById('fichier').remove();
+    }else if (e.key != 'Enter'){
+        e.srcElement.parentElement.remove();
+    }else{
+        Object.values(document.getElementsByClassName('fichier-son')).forEach(value=>{
+            value.remove();
+        });
+    }
 }
 
 //message direct vers le bas
