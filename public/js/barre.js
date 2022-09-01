@@ -5,8 +5,9 @@
  let dami = document.getElementsByClassName('ami');
 
 $(document).ready(function(){
+
     $('#barreSearch').on('keyup',function(){
-        
+
         let utilisateur = $(this).val();
         let suggestion = "";
         if(utilisateur != "" ){
@@ -16,10 +17,15 @@ $(document).ready(function(){
                     url:newLocal,
                     data:{user: utilisateur},
                     success: function(data){
+                        console.log(data);
                         let users =  data.filter(element => element.username);    
                         if(users != ""){ 
-                                let resultat = document.createElement('div');
-                                resultat.setAttribute('id','resultat');
+                                let resultat = document.getElementById('resultats');
+                                if(!resultat){
+                                    resultat = document.createElement('div');
+                                    resultat.setAttribute('id','resultats');
+                                    document.getElementById('barreSearch').insertAdjacentElement("afterend", resultat);
+                                }
                                 users.forEach(element =>{
                                     if(element.username!= user_username){
                                         let exist = false
@@ -33,14 +39,18 @@ $(document).ready(function(){
                                         }else{
                                             suggestion+=`<div id="user-`.concat(element.id,`"  class="user" onclick="deja_ami(event)"><img class="photo" src="`,element.photo,`" alt="photo de profil"><p style='margin-left:10px' class="username">${element.username}</p></div>`); 
                                         }
-                                        document.getElementById('resultats').innerHTML=suggestion; 
-                                    }else{
-                                        suggestion;
+                                        resultat.innerHTML=suggestion; 
                                     }
                                 }) 
                         }else{
                             suggestion+=`<div class="aucun"><p>aucun&nbsp;resultat</p></div>`;
-                            document.getElementById('resultats').innerHTML=suggestion;
+                            let resultat = document.getElementById('resultats');
+                            if(!resultat){
+                                resultat = document.createElement('div');
+                                resultat.setAttribute('id','resultats');
+                                document.getElementById('barreSearch').insertAdjacentElement("afterend", resultat);
+                            }
+                            resultat.innerHTML=suggestion;
                         }               
                     }
                             /*if(element.username){
@@ -54,9 +64,12 @@ $(document).ready(function(){
                             }*/
         }) 
         }else{
-            document.querySelectorAll('.user').forEach(element => {
-                element.innerHTML = suggestion;
-            })
+                if($('#resultats')){
+                    document.getElementById('resultats').innerHTML ="";
+                }
+            //document.querySelectorAll('.user').forEach(element => {
+               // element.innerHTML = suggestion;
+            //})
         }
     })
 })
