@@ -43,12 +43,10 @@
         body{background-color:rgb(27 27 27); overflow-x:hidden; width:100vw}
         header a{text-decoration:none;}
         #recherche{display: flex;flex-direction:column;align-items: center;color: whitesmoke;position:absolute;top:20px;left:50%;transform:translateX(-50%);}
-        #recherche .barre {background: url('{{ asset('img/loupe 1.svg') }}') center no-repeat; background-size: contain;border: none;height: 40px;width: 40px;cursor: pointer;transition: transform 125ms;animation: retrecissement_recherche 625ms;color: transparent;text-align: center;border-radius: 10px;margin-left:10px;margin-right:10px}
-        #recherche .barre:hover {transform: scale(120%);}
-        #recherche .barre:focus {background: none;border: solid 1px rgb(255, 255, 255);height: 21px;width: 380px;color: whitesmoke;cursor: text;transform: scale(100%);animation: elargissement_recherche 500ms;}
-        #recherche .barre:focus ~ #resultats {display:flex;}
+        #recherche .barre {background: url('{{ asset('img/loupe 1.svg') }}') center no-repeat; background-size: contain;border:none;height: 40px;width: 40px;cursor: pointer;transition: transform 125ms;animation: retrecissement_recherche 625ms;color: transparent;text-align: center;border-radius: 10px;margin-left:10px;margin-right:10px}
+        #recherche .barre:focus {background: none;border: solid 1px rgb(255, 255, 255);height: 40px;width: 380px;color: whitesmoke;cursor: text;transform: scale(100%);animation: elargissement_recherche 500ms;}
         @keyframes elargissement_recherche {from {width: 0px;} to {width: 380px;}}
-        @keyframes retrecissement_recherche {from {background: none;border: solid 1px rgb(255, 255, 255);width: 380px;height: 21px;} 20% {background: none;border: solid 1px rgb(255, 255, 255);width: 380px;height: 21px;} to {background: none;border: solid 1px rgb(255, 255, 255);width: 0px;height: 21px;}}
+        @keyframes retrecissement_recherche {from {background: none;border: solid 1px rgb(255, 255, 255);width: 380px;height: 40px;} 20% {background: none;border: solid 1px rgb(255, 255, 255);width: 380px;height: 40px;} to {background: none;border: solid 1px rgb(255, 255, 255);width: 0px;height: 40px;}}
         #header_end{display:flex;align-items:center;position:relative;}
         #lien_notification{height:40px; width:40px;transition-duration:0.5s; cursor:pointer;margin-right: 4vw;}
         #lien_notification:hover{transform: scale(120%)}
@@ -85,7 +83,7 @@
         #resultats{display:none;flex-direction: column;align-items: center; padding:20px}
         .photo{width: 40px; grid-column:1/4; grid-row: 1;}
         .username{grid-column:4/4; grid-row: 1;}
-        .amis{grid-column:3/4; grid-row: 3;}
+        .amis{grid-column:4/4; grid-row: 3;}
         .user{margin-bottom:3px;border-radius: 30px;width:380px;  padding : 10px;display: grid;  justify-content: center; align-items: center; background-color: #549956;}
         .aucun{border-radius: 30px; padding : 10px;width:380px;display: flex; flex-direction: row; justify-content: center; align-items: center; background-color: #549956;}
         @media  screen and (max-width:666px) {
@@ -111,8 +109,11 @@
             #liste_notification{min-width:260px; right:calc(0px - 0px);left: 52%;transform: translateX(-50%);}
             header{padding:0 20px;}
             #nombre_notification{left:50%; top:-25px}
-            #recherche .barre{width:90%;}
-            #resultats{width:90%;}
+            #recherche .barre:focus{width:90%;}
+            #resultats{width:100%;}
+            #resultats .user{width:90%;}
+            @keyframes elargissement_recherche {from {width: 0px;} to {width: 90%;}}
+            @keyframes retrecissement_recherche {from {background: none;border: solid 1px rgb(255, 255, 255);width: 90%;height: 21px;} 20% {background: none;border: solid 1px rgb(255, 255, 255);width: 90%;height: 21px;} to {background: none;border: solid 1px rgb(255, 255, 255);width: 0px;height: 21px;}}
         }
         @media  screen and (max-width:320px) {
             .date_dernier_message{font-size:11px;padding:0%;}
@@ -121,6 +122,8 @@
         #label_input img{position:absolute;}
         #id_input{visibility:hidden;width:25px;}
         header a h1 img {filter: drop-shadow(0 0 1px white);}
+        #case_loupe{visibility:hidden;width:40px;height:40px;display: flex;flex-direction:column;align-items: center;color: whitesmoke;position:absolute;top:0px;left:50%;transform:translateX(-50%);}
+        #overlay{width:100vw;height:100vh; opacity:1;z-index: -100; background-color:rgb(27,27,27,0.5);position:absolute;top:0}
     </style>
   
 
@@ -171,10 +174,10 @@
 
     <main>
         <div id="recherche">
-            <input class="barre" type="text" name="text" id="barreSearch">
+            <input onclick="rechercheAmis()" class="barre" type="text" name="text" id="barreSearch">
             <div id="resultats"></div>
         </div>
-        <input type='checkbox' id='case_menu_lateral'>
+        <input type='checkbox' id='case_menu_lateral' onclick="overlayRecherche()">
         <label for='case_menu_lateral'>
             <div class='overlay'></div>
         </label>
@@ -247,5 +250,6 @@
             <a href="{{ path('app_logout') }}"><img id='deconnection' src='{{ asset('img/se deconnecter.png') }}' alt='deconnection'></a>
         </div>
     </main>
+    <div id="overlay" onclick="overlayRecherche()"></div>
 {% endblock %}
 

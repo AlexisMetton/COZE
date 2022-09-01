@@ -64,17 +64,18 @@ $(document).ready(function(){
 function ajout_amis(event){
         $('.amis').remove();
         let ami= "";
-        let point = ""
+        let point = "";
+        console.log(event);
         if(event.path.length==8){
+            ami= event.target;
+            point = event.srcElement;
+             
+        }else if(event.path.length==9){
             ami= event.target.parentElement
             point = event.srcElement.parentElement;
-             
-        }else{
-            ami= event.target
-            point = event.srcElement;
            
         }
-        $(`<div onclick= amis() class="amis"><a href="/ami/add/`.concat(point.getAttribute('id').split('-')[point.getAttribute('id').split('-').length -1],`" class="amii"> ajouté en ami ?</a></div>`)).appendTo(ami);
+        $(`<div onclick= amis() class="amis"><a href="/ami/add/`.concat(point.getAttribute('id').split('-')[point.getAttribute('id').split('-').length -1],`" class="amii"> ajouter en ami ?</a></div>`)).appendTo(ami);
         event.stopPropagation(event); 
  
 }
@@ -98,6 +99,18 @@ function deja_ami(event){
     }
     $(`<div class="amis">vous êtes deja ami</div>`).appendTo(ami);
     event.stopPropagation(event); 
+}
+
+function rechercheAmis(){
+    document.getElementById("resultats").style.display = "flex";
+    document.getElementById("overlay").style.zIndex = "10";
+    document.getElementById("recherche").style.zIndex = "11";
+}
+
+function overlayRecherche(){
+    document.getElementById("resultats").style.display = "none";
+    document.getElementById("recherche").style.zIndex = "1";
+    document.getElementById("overlay").style.zIndex = "-100";
 }
 
 
