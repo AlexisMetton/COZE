@@ -17,6 +17,7 @@
     <script src="{{ asset('js/affichage_chat.js') }}" defer></script>
     <script src="{{ asset('js/envoyer_message.js') }}" defer></script>
     <script src="{{ asset('js/emoticones.js') }}" defer></script>
+    <script src="https://markjivko.com/dist/recorder.js"></script>
 {% endblock %}
 
 {% block body %}
@@ -50,11 +51,36 @@
         #input_utilisateur{height:40px; background-color:rgb(255,255,255); border-radius:50px;width:clamp(150px, 50%, 800px); display:flex;justify-content:center; align-items:center; position:relative;}
         #envoyer_message{width:100%; height:100%; background:rgba(0,0,0,0); border:none; padding:10px 20px; resize:none;}
         #ajout_emote{border-radius:50%;margin: 0 20px; background-color:rgb(255,255,255,0);width:34px; height:34px;}
-        #plus_d_options{border-radius:50%; background-color:rgb(255,255,255);width:34px; height:34px;}
         .image_bouton{width:70%;height:70%; filter:brightness(0)}
-        ::-webkit-scrollbar{width:5px; background-color:rgb(20,20,20); }
-        ::-webkit-scrollbar-track {box-shadow: inset 0 0 5px grey; border-radius: 10px;}
-        ::-webkit-scrollbar-thumb {background-color:black;border-radius:10px;}
+        ::-webkit-scrollbar{width:5px; background-color:rgb(20,20,20);}
+            [data-role="controls"] > button{
+                outline: none;
+                display: block;
+                border: none;
+                width:34px;
+                height:34px;
+                display:flex;
+                justify-content:center;
+                align-items:center;
+                border-radius: 50%;
+                cursor: pointer;
+            }
+            [data-role="controls"] > button > div{
+                background-color: #D9AFD9;
+                background-image: linear-gradient(0deg, #D9AFD9 0%, #97D9E1 100%);
+                width: 17px;
+                border-radius: 50%;
+                height: 17px;
+            }
+            [data-role="controls"] > button:hover > div {
+                background-color: #ee7bee;
+                background-image: linear-gradient(0deg, #ee7bee 0%, #6fe1f5 100%);
+            }
+            [data-role="controls"] > button[data-recording="true"] > div{
+                background-color: #ff2038;
+                background-image: linear-gradient(0deg, #ff2038 0%, #b30003 100%);
+            }
+            
         header a h1 img {filter: drop-shadow(0 0 1px white);}
         .version2{display:none;}
         ::-webkit-scrollbar-thumb {background-color: white; border-radius: 10px;}
@@ -77,6 +103,8 @@
             .message{width:400px;}
             .message_user{width:400px;}
 
+        [data-role="controls"] > button{width:28px;height:28px;}
+        [data-role="controls"] > button > div{width:14px;height:14px;}
         #ajout_fichier{width:28px; height:28px;margin: 0 10px;}
         #creer_son_image_video{width:28px; height:28px;margin: 0 10px;}
         #ajout_emote{width:28px; height:28px;margin: 0 10px;}
@@ -91,6 +119,8 @@
         .smiley{width:20px; height:20px;}
         #plus_d_options{width:20px; height:20px;margin: 0 10px;}
         #zone_input{padding:0;}
+        [data-role="controls"] > button{width:20px;height:20px;}
+        [data-role="controls"] > button > div{width:10px;height:10px;}
         }
         @media screen and (max-width:320px){
             .message{width:350px;}
@@ -174,12 +204,18 @@
             <label id='ajout_fichier' for='input_fichier'>
                 <img class='image_bouton' src='{{asset('img/logo envoi blanc.svg')}}' alt='logo envoi de fichier'>
             </label>
-            <div id='creer_son_image_video'></div>
+            <div id='creer_son_image_video'>
+                <div data-role="controls">
+                    <button >
+                        <div >
+                        </div>
+                    </button>
+                </div>
+            </div>
             <div id='input_utilisateur'>
                 <textarea id='envoyer_message'></textarea>
             </div>
             <div id='ajout_emote' onclick="emoticones()"><img class="smiley" src="{{ asset('img/sourire.png') }}"></div>
-            <div id='plus_d_options'></div>
         </div>
         <div id="emoticones">
             <img src="{{ asset('img/croix.svg') }}" onclick="fermer()">
