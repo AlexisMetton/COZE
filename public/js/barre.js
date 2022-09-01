@@ -86,7 +86,7 @@ function amis(){
 function deja_ami(event){
     $('.amis').remove();
     let ami= "";
-    let point = ""
+    let point = "";
     if(event.path.length==8){
         ami= event.target.parentElement
         point = event.srcElement.parentElement;
