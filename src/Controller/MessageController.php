@@ -35,15 +35,10 @@ class MessageController extends AbstractController
         
         $user = $this->getUser();
         $idDiscussion = $request->request->get('id');
-        $fichier = $request->files->get('fichier');
+        $fichier = $request->files->all();
         if(!$idDiscussion){
             return new JsonResponse('Erreur à la demande Ajax');
         }
-        $id=0;
-        foreach($fichier as $file){
-            $jsonData[$id++] = $file->getClientMimeType();
-        }
-        return new JsonResponse($jsonData);
         $discussion = $discussion_repository->find($idDiscussion);
         $message = new Message();
         $message->setUserId($user);
@@ -53,18 +48,36 @@ class MessageController extends AbstractController
         $nom_fichier = '';
         $type_fichier = '';
         if($fichier){
-            if(preg_match('/video/', $fichier-> getClientMimeType())){
-                $nom_fichier = '/video/' . $receptionVideo -> upload($fichier);
-                $type_fichier = $fichier->getClientMimeType();
-            }else if(preg_match('/audio/', $fichier-> getClientMimeType())){
-                $nom_fichier = '/audio/' . $receptionAudio -> upload($fichier);
-                $type_fichier = $fichier->getClientMimeType();
-            }else if (preg_match('/image/', $fichier-> getClientMimeType())){
-                $nom_fichier = '/img/' . $fileUploader -> upload($fichier);
-                $type_fichier = $fichier->getClientMimeType();
-            }else{
-                $nom_fichier = '/fichier/' . $receptionFichier->upload($fichier);
-                $type_fichier = $fichier->getClientMimeType();
+            foreach ($fichier as $key => $value) {
+                if($key == 'fichier0'){
+                    if(preg_match('/video/', $value-> getClientMimeType())){
+                        $nom_fichier = '/video/' . $receptionVideo -> upload($value);
+                        $type_fichier = $value->getClientMimeType();
+                    }else if(preg_match('/audio/', $value-> getClientMimeType()) || preg_match('/octet-stream/', $value-> getClientMimeType())){
+                        $nom_fichier = '/audio/' . $receptionAudio -> upload($value);
+                        $type_fichier = $value->getClientMimeType();
+                    }else if (preg_match('/image/', $value-> getClientMimeType())){
+                        $nom_fichier = '/img/' . $fileUploader -> upload($value);
+                        $type_fichier = $value->getClientMimeType();
+                    }else{
+                        $nom_fichier = '/fichier/' . $receptionFichier->upload($value);
+                        $type_fichier = $value->getClientMimeType();
+                    }
+                }else{
+                    if(preg_match('/video/', $value-> getClientMimeType())){
+                        $nom_fichier .= '*/video/' . $receptionVideo -> upload($value);
+                        $type_fichier .= '*'.$value->getClientMimeType();
+                    }else if(preg_match('/audio/', $value-> getClientMimeType()) || preg_match('/octet-stream/', $value-> getClientMimeType())){
+                        $nom_fichier .= '*/audio/' . $receptionAudio -> upload($value);
+                        $type_fichier .= '*'.$value->getClientMimeType();
+                    }else if (preg_match('/image/', $value-> getClientMimeType())){
+                        $nom_fichier .= '*/img/' . $fileUploader -> upload($value);
+                        $type_fichier .= '*'.$value->getClientMimeType();
+                    }else{
+                        $nom_fichier .= '*/fichier/' . $receptionFichier->upload($value);
+                        $type_fichier .= '*'.$value->getClientMimeType();
+                    }
+                }
             }
             $message->setFichier($nom_fichier);
             $message->setTypeFichier($type_fichier);
