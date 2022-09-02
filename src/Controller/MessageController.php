@@ -6,6 +6,10 @@ namespace App\Controller;
 use App\Entity\Notification;
 use App\Entity\Discussion;
 use App\Entity\Message;
+use App\Service\ReceptionFichier;
+use App\Service\ReceptionAudio;
+use App\Service\ReceptionVideo;
+use App\Service\FileUploader;
 use App\Repository\DiscussionRepository;
 use App\Repository\MessageRepository;
 use App\Repository\UsersRepository;
@@ -18,18 +22,20 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Mercure\Update;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class MessageController extends AbstractController
 {
     /**
      * @Route("/message/envoi", name="send_message")
      */
-    public function sendMessage(HubInterface $hub, DiscussionRepository $discussion_repository, Request $request, EntityManagerInterface $entityManager):JsonResponse
+    public function sendMessage(HubInterface $hub, DiscussionRepository $discussion_repository, Request $request, EntityManagerInterface $entityManager, ReceptionFichier $receptionFichier, ReceptionAudio $receptionAudio, ReceptionVideo $receptionVideo, FileUploader $fileUploader):JsonResponse
     {
         /** @var \App\Entity\Users $user */
         
         $user = $this->getUser();
         $idDiscussion = $request->request->get('id');
+        $fichier = $request->files->all();
         if(!$idDiscussion){
             return new JsonResponse('Erreur à la demande Ajax');
         }
@@ -39,6 +45,43 @@ class MessageController extends AbstractController
         $message->setDiscussionId($discussion);
         $message->setMessage($request->request->get('message'));
         $message->setDateEnvoi(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
+        $nom_fichier = '';
+        $type_fichier = '';
+        if($fichier){
+            foreach ($fichier as $key => $value) {
+                if($key == 'fichier0'){
+                    if(preg_match('/video/', $value-> getClientMimeType())){
+                        $nom_fichier = '/video/' . $receptionVideo -> upload($value);
+                        $type_fichier = $value->getClientMimeType();
+                    }else if(preg_match('/audio/', $value-> getClientMimeType()) || preg_match('/octet-stream/', $value-> getClientMimeType())){
+                        $nom_fichier = '/audio/' . $receptionAudio -> upload($value);
+                        $type_fichier = $value->getClientMimeType();
+                    }else if (preg_match('/image/', $value-> getClientMimeType())){
+                        $nom_fichier = '/img/' . $fileUploader -> upload($value);
+                        $type_fichier = $value->getClientMimeType();
+                    }else{
+                        $nom_fichier = '/fichier/' . $receptionFichier->upload($value);
+                        $type_fichier = $value->getClientMimeType();
+                    }
+                }else{
+                    if(preg_match('/video/', $value-> getClientMimeType())){
+                        $nom_fichier .= '*/video/' . $receptionVideo -> upload($value);
+                        $type_fichier .= '*'.$value->getClientMimeType();
+                    }else if(preg_match('/audio/', $value-> getClientMimeType()) || preg_match('/octet-stream/', $value-> getClientMimeType())){
+                        $nom_fichier .= '*/audio/' . $receptionAudio -> upload($value);
+                        $type_fichier .= '*'.$value->getClientMimeType();
+                    }else if (preg_match('/image/', $value-> getClientMimeType())){
+                        $nom_fichier .= '*/img/' . $fileUploader -> upload($value);
+                        $type_fichier .= '*'.$value->getClientMimeType();
+                    }else{
+                        $nom_fichier .= '*/fichier/' . $receptionFichier->upload($value);
+                        $type_fichier .= '*'.$value->getClientMimeType();
+                    }
+                }
+            }
+            $message->setFichier($nom_fichier);
+            $message->setTypeFichier($type_fichier);
+        }
         $entityManager->persist($message);
         $entityManager->flush();
         $discussion->addMessage($message);    
@@ -46,21 +89,26 @@ class MessageController extends AbstractController
         $entityManager->flush();
         $jsonData = ['nom' => $user->getUsername(), 'photo' => $user->getPhoto()];
         
-        $update = new Update('https://message/'.$idDiscussion ,json_encode(["id" => $message->getId(), "discussion" => $idDiscussion, 'nom' => $user->getUsername(), 'photo' => $user->getPhoto(), 'message' => $request->request->get('message'), 'heure' => new \DateTime('now', new \DateTimeZone('Europe/Paris'))]));
+        $update = new Update('https://message/'.$idDiscussion ,json_encode(["id" => $message->getId(), "discussion" => $idDiscussion, 'nom' => $user->getUsername(), 'photo' => $user->getPhoto(), 'message' => $request->request->get('message'), 'heure' => new \DateTime('now', new \DateTimeZone('Europe/Paris')), 'fichier' => $nom_fichier, 'type_fichier' => $type_fichier]));
         $hub->publish($update);
 
         foreach ($discussion->getMembres() as $membre){
             if($membre != $user){
-                        $notification_message = new Notification();
-                        $notification_message->setType("url");
-                        $notification_message->setMessage($user->getUsername() . ' vous a envoyé un message.');
-                        $notification_message->setLogo($user->getPhoto());
-                        $notification_message->setUrl('discussion/'.$discussion->getId());
-                        $entityManager->persist($notification_message);
-                        $entityManager->flush();
-                        $membre->addNotification($notification_message);
-                        $entityManager->persist($membre);
-                        $entityManager->flush();
+                $notification_message = new Notification();
+                $notification_message->setType("url");
+                $notification_message->setMessage($user->getUsername() . ' vous a envoyé un message.');
+                $notification_message->setLogo($user->getPhoto());
+                $notification_message->setUrl('discussion/'.$discussion->getId());
+                $entityManager->persist($notification_message);
+                $entityManager->flush();
+                $membre->addNotification($notification_message);
+                $entityManager->persist($membre);
+                $entityManager->flush();
+
+                $update = new Update('https://notification/'.$membre->getId().'/message/'.$idDiscussion ,json_encode(["id" => $notification_message->getId()]));
+                $hub->publish($update);
+                $update = new Update('https://notification/'.$membre->getId(),json_encode(["id" => $notification_message->getId(), "discussion" => $idDiscussion, 'photo' => $user->getPhoto(), 'message' => $notification_message->getMessage(), 'type' => $notification_message->getType()]));
+                $hub->publish($update);
             }
         }
         

@@ -39,6 +39,17 @@ class Message
      */
     private $date_envoi;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $fichier;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $type_fichier;
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -88,6 +99,30 @@ class Message
     public function setDateEnvoi(\DateTimeInterface $date_envoi): self
     {
         $this->date_envoi = $date_envoi;
+
+        return $this;
+    }
+
+    public function getFichier(): ?string
+    {
+        return $this->fichier;
+    }
+
+    public function setFichier(string $fichier): self
+    {
+        $this->fichier = $fichier;
+
+        return $this;
+    }
+
+    public function getTypeFichier(): ?string
+    {
+        return $this->type_fichier;
+    }
+
+    public function setTypeFichier(?string $type_fichier): self
+    {
+        $this->type_fichier = $type_fichier;
 
         return $this;
     }

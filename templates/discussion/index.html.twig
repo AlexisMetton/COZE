@@ -3,6 +3,9 @@
 {% block title %}{{titre}}{% endblock %}
 
 {% block javascripts %}
+    <script type="application/json" id="mercure-url-notification">
+        {{ mercure('https://notification/' ~ user.getId() ~ '/message/' ~ discussion)|json_encode(constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG'))|raw }}
+    </script>
     <script type="application/json" id="mercure-url">
         {{ mercure('https://message')|json_encode(constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG'))|raw }}
     </script>
@@ -13,112 +16,133 @@
     <script src="{{ asset('js/date_diff.js') }}"></script>
     <script src="{{ asset('js/affichage_chat.js') }}" defer></script>
     <script src="{{ asset('js/envoyer_message.js') }}" defer></script>
+    <script src="{{ asset('js/emoticones.js') }}" defer></script>
     <script src="https://markjivko.com/dist/recorder.js"></script>
 {% endblock %}
 
 {% block body %}
     <style>
-        *{padding:0;margin:0;box-sizing:border-box; text-decoration:none;}
-        header{display:flex; justify-content:space-between;;margin-bottom:100px; align-items:center; padding : 0 50px;}
-        header h1{font-size : 70px}
-        #titre{flex-grow:1; color:rgb(150,150,150); text-align:center; font-size:40px}
-        body{background-color:rgb(54,54,54); overflow-x:hidden; width:100vw; position:relative}
-        #liste_message{display:flex;flex-direction:column; width:100vw;padding: 0 5%; height:calc(90vh - 180px); overflow-y:scroll}
+        *{padding:0;margin:0;box-sizing:border-box; text-decoration:none; color:white;}
+        header{display:flex; justify-content:space-between; align-items:center; padding : 0 50px;}
+        header h1{font-size : 70px;text-shadow: 0px 0px 3px white; color:#25521c}
+        #titre{flex-grow:1; color:rgb(255,255,255); text-align:center; font-size:40px}
+        body{background-color:rgb(27,27,27); overflow-x:hidden; width:100vw; position:relative;}
+        #liste_message{display:flex;flex-direction:column; width:100vw;padding: 0 5%; height:calc(96vh - 120px); overflow-y:scroll;overflow-x:hidden;}
         .message{display:grid; align-items:center; grid-template-columns: 1fr 4fr 2fr; margin-bottom:20px;width:clamp(500px, 100%, 800px);color:white}
         .nom{grid-column:1/3;grid-row:1/2; padding : 0 5%; justify-self:center}
-        .message_info{ align-items:center;position:relative;grid-column:1/3; grid-row:2/3; background-color:#549956; border-radius:65px;display:flex}
+        .message_info{ align-items:center;position:relative;grid-column:1/3; grid-row:2/3; background-color:#78b968; border-radius:65px;display:flex}
         .photo_conteneur{background-color:rgb(200,200,200); border-radius:50%; overflow:hidden; height: 50px; width : 50px; display:flex; justify-content:center; align-items:center;}
         .photo{width:95%; height:95%}
-        .message_contenu{max-width:calc(100% - 50px);word-break:break-word;align-self:center; flex-grow:1;; padding:0 5%}
+        .message_contenu{display:flex;flex-direction:column;max-width:calc(100% - 50px);word-break:break-word;align-self:center; flex-grow:1; padding:15px 8%}
+        .image_message{height:200px; max-width:300px; padding:15px;align-self:center;}
         .date_message{grid-column:3/4;grid-row:2/3; padding : 0 10%;}
         .message_user{word-break:break-word;display:grid; align-items:center; align-self:end; grid-template-columns: 2fr 4fr 1fr; margin-bottom:20px;width:clamp(500px, 100%, 800px);color:white}
         .nom_user{grid-column:2/4;grid-row:1/2; padding : 0 5%; justify-self:center}
-        .message_info_user{ align-items:center;position:relative;grid-column:2/4; grid-row:2/3; background-color:#246926; border-radius:65px;display:flex; flex-direction:row-reverse}
-        .message_contenu_user{max-width:calc(100% - 50px);word-break:break-word;align-self:center; flex-grow:1;; padding:0 5%; text-align:end}
+        .message_info_user{ align-items:center;position:relative;grid-column:2/4; grid-row:2/3; background-color:#25521c; border-radius:65px;display:flex; flex-direction:row-reverse}
+        .message_contenu_user{display:flex;flex-direction:column;max-width:calc(100% - 50px);word-break:break-word;align-self:center; flex-grow:1;; padding:15px 8%; text-align:end}
         .date_message_user{grid-column:1/2;grid-row:2/3; padding : 0 10%;}
-        #zone_input{width:100vw; padding : 0 10%; height:10vh; position:fixed;top:90vh;display:flex;justify-content: space-around; align-items:center}
-        #ajout_fichier{border-radius:50%; background-color:rgb(180,180,180);width:40px; height:40px; }
-        #creer_son_image_video{border-radius:50%;margin: 0 20px; background-color:rgb(180,180,180);width:40px; height:40px;}
-        #input_utilisateur{height:40px; background-color:rgb(180,180,180); border-radius:50px;width:clamp(200px, 60%, 800px); display:flex;justify-content:center; align-items:center; position:relative;}
-        #envoyer_message{width:100%; height:100%; background:rgba(0,0,0,0); border:none; padding:10px 20px; resize:none;}
-        #ajout_emote{border-radius:50%;margin: 0 20px; background-color:rgb(180,180,180);width:40px; height:40px;}
-        #plus_d_options{border-radius:50%; background-color:rgb(180,180,180);width:40px; height:40px;}
+        #zone_input{width:100vw; padding : 0 10%; position:fixed;bottom:10px;display:flex;flex-wrap:wrap;justify-content:center; align-items:center}
+        #liste_fichier{position:relative;display:flex;background-color:rgba(180,180,180,0.8); align-items:end;justify-content:center;;flex-wrap:wrap}
+        .fichier{position:relative; display:flex;flex-direction:column;align-items:center;margin:20px; border:1px dashed black;}
+        .image_fichier{height:20vh; max-width:20vh; padding:10px;}
+        .nom_fichier{padding:15px;color:white;}
+        .bouton_supprimer{cursor:pointer;position:absolute;left:calc(100% - 15px);top:-15px;width:30px; height:30px;background-color:red;border-radius:50%;padding:5px;color:white;}
+        #ajout_fichier{border-radius:50%; background-color:rgb(255,255,255);width:34px; height:34px;display:flex;justify-content:center;align-items:center;}
+        #creer_son_image_video{border-radius:50%;margin: 0 20px; background-color:rgb(255,255,255);width:34px; height:34px;}
+        #input_utilisateur{height:40px; background-color:rgb(255,255,255); border-radius:50px;width:clamp(150px, 50%, 800px); display:flex;justify-content:center; align-items:center; position:relative;}
+        #envoyer_message{color:black;width:100%; height:100%; background:rgba(0,0,0,0); border:none; padding:10px 20px; resize:none;}
+        #ajout_emote{border-radius:50%;margin: 0 20px; background-color:rgb(255,255,255,0);width:34px; height:34px;}
+        .image_bouton{width:70%;height:70%; filter:brightness(0)}
         ::-webkit-scrollbar{width:5px; background-color:rgb(20,20,20);}
-            [data-role="controls"] > button {
+            [data-role="controls"] > button{
                 outline: none;
                 display: block;
                 border: none;
-                background-color: #D9AFD9;
-                background-image: -webkit-gradient(linear, left bottom, left top, from(#D9AFD9), to(#97D9E1));
-                background-image: -o-linear-gradient(bottom, #D9AFD9 0%, #97D9E1 100%);
-                background-image: linear-gradient(0deg, #D9AFD9 0%, #97D9E1 100%);
-                width: 40px;
-                height: 40px;
+                width:34px;
+                height:34px;
+                display:flex;
+                justify-content:center;
+                align-items:center;
                 border-radius: 50%;
-                text-indent: -1000em;
                 cursor: pointer;
-                -webkit-box-shadow: 0px 5px 5px 2px rgba(0,0,0,0.3) inset, 
-                    0px 0px 0px 30px #fff, 0px 0px 0px 35px #333;
-                        box-shadow: 0px 5px 5px 2px rgba(0,0,0,0.3) inset, 
-                    0px 0px 0px 30px #fff, 0px 0px 0px 35px #333;
             }
-            [data-role="controls"] > button:hover {
+            [data-role="controls"] > button > div{
+                background-color: #D9AFD9;
+                background-image: linear-gradient(0deg, #D9AFD9 0%, #97D9E1 100%);
+                width: 17px;
+                border-radius: 50%;
+                height: 17px;
+            }
+            [data-role="controls"] > button:hover > div {
                 background-color: #ee7bee;
-                background-image: -webkit-gradient(linear, left bottom, left top, from(#ee7bee), to(#6fe1f5));
-                background-image: -o-linear-gradient(bottom, #ee7bee 0%, #6fe1f5 100%);
                 background-image: linear-gradient(0deg, #ee7bee 0%, #6fe1f5 100%);
             }
-            [data-role="controls"] > button[data-recording="true"] {
+            [data-role="controls"] > button[data-recording="true"] > div{
                 background-color: #ff2038;
-                background-image: -webkit-gradient(linear, left bottom, left top, from(#ff2038), to(#b30003));
-                background-image: -o-linear-gradient(bottom, #ff2038 0%, #b30003 100%);
                 background-image: linear-gradient(0deg, #ff2038 0%, #b30003 100%);
             }
-            [data-role="recordings"] > .row {
-                width: auto;
-                height: auto;
-                padding: 20px;
-            }
-            [data-role="recordings"] > .row > audio {
-                outline: none;
-            }
-            [data-role="recordings"] > .row > a {
-                display: inline-block;
-                text-align: center;
-                font-size: 20px;
-                line-height: 50px;
-                vertical-align: middle;
-                width: 50px;
-                height: 50px;
-                border-radius: 20px;
-                color: #fff;
-                font-weight: bold;
-                text-decoration: underline;
-                background-color: #0093E9;
-                background-image: -webkit-gradient(linear, left bottom, left top, from(#0093E9), to(#80D0C7));
-                background-image: -o-linear-gradient(bottom, #0093E9 0%, #80D0C7 100%);
-                background-image: linear-gradient(0deg, #0093E9 0%, #80D0C7 100%);
-                float: right;
-                margin-left: 20px;
-                cursor: pointer;
-            }
-            [data-role="recordings"] > .row > a:hover {
-                text-decoration: none;
-            }
-            [data-role="recordings"] > .row > a:active {
-                background-image: -webkit-gradient(linear, left top, left bottom, from(#0093E9), to(#80D0C7));
-                background-image: -o-linear-gradient(top, #0093E9 0%, #80D0C7 100%);
-                background-image: linear-gradient(180deg, #0093E9 0%, #80D0C7 100%);
-            }
-        ::-webkit-scrollbar-track {box-shadow: inset 0 0 5px grey; border-radius: 10px;}
-        ::-webkit-scrollbar-thumb {background-color:black;border-radius:10px;}
-</style>
+            
+        header a h1 img {filter: drop-shadow(0 0 1px white);}
+        .version2{display:none;}
+        ::-webkit-scrollbar-thumb {background-color: white; border-radius: 10px;}
+        ::-webkit-scrollbar {width: 5px;background-color: rgb(0 0 0);}
+        .zone_input2{display:none}
+        .smiley{width:34px; height:34px;}
+        #emoticones{justify-content: center;overflow-x:scroll;display:none; width: 100vw;padding: 0 10%;height: 10vh;position: fixed;top: 90vh;align-items: center; background-color:rgb(27,27,27)}
+        #emoticones img{width:40px; height:40px;margin-left:5px;margin-right:5px;}
+        @media screen and (max-width:550px){
+            .version2{display:flex;}
+            .version1{display:none;}
+            .date_message_user{display:none;}
+            .date_message{display:none;}
+        }
+        @media screen and (max-width:450px){
+            .zone_input1{display:none;}
+            .zone_input2{display:flex;}
+        }
+        @media screen and (max-width:400px){
+            .message{width:400px;}
+            .message_user{width:400px;}
 
-    <header>
+        [data-role="controls"] > button{width:28px;height:28px;}
+        [data-role="controls"] > button > div{width:14px;height:14px;}
+        #ajout_fichier{width:28px; height:28px;margin: 0 10px;}
+        #creer_son_image_video{width:28px; height:28px;margin: 0 10px;}
+        #ajout_emote{width:28px; height:28px;margin: 0 10px;}
+        .smiley{width:28px; height:28px;}
+        #plus_d_options{width:28px; height:28px;margin: 0 10px;}
+        #zone_input{padding:0;}
+        }
+        @media screen and (max-width:350px){
+        #ajout_fichier{width:20px; height:20px;margin: 0 10px;}
+        #creer_son_image_video{width:20px; height:20px;margin: 0 10px;}
+        #ajout_emote{width:20px; height:20px;margin: 0 10px;}
+        .smiley{width:20px; height:20px;}
+        #plus_d_options{width:20px; height:20px;margin: 0 10px;}
+        #zone_input{padding:0;}
+        [data-role="controls"] > button{width:20px;height:20px;}
+        [data-role="controls"] > button > div{width:10px;height:10px;}
+        }
+        @media screen and (max-width:320px){
+            .message{width:350px;}
+            .message_user{width:350px;}
+        }
+        @media screen and (max-width:500px){
+            #emoticones{
+                justify-content: flex-start;
+            }
+            .image_message{max-width:200px; height:150px;}
+            audio{width:200px;}
+        }
+</style>
+    <header class="version1">
         <a style="color:black;" href="{{ path('accueil') }}"><h1>C<span><img src="{{ asset('img/coze.svg') }}" height="48px"></span>ZE</h1></a>
         <h2 id='titre'>{{titre}}</h2>
     </header>
-
+    <header class="version2">
+        <a style="color:black;" href="{{ path('accueil') }}"><h1><span><img src="{{ asset('img/coze.svg') }}" height="48px"></span></h1></a>
+        <h2 id='titre'>{{titre}}</h2>
+    </header>
     <main>
         <div id='liste_message'>
             {% for message in messages %}
@@ -129,7 +153,26 @@
                             <div class='photo_conteneur'>
                                 <img class='photo' src='{{ asset(message.getUserId().getPhoto()) }}' alt='photo_discussion'>
                             </div>
-                            <p class='message_contenu'>{{ message.getMessage() }}</p>
+                            <div class='message_contenu'>
+                                {% if not message.getFichier() is empty %}
+                                    {% for fichier in (message.getFichier() | split ('*')) %}
+                                        {% if '/img/' in fichier %}
+                                            <img src="{{fichier}}" alt='image fichier' class='image_message'>
+                                        {% elseif '/video/' in fichier %}
+                                            <video controls width="80%" style='align-self:center; padding:15px;'>
+                                                <source src="{{fichier}}" type="{{(message.getTypeFichier() | split('*'))[loop.index0]}}">
+                                            </video> 
+                                        {% elseif '/audio/' in fichier %}
+                                            <audio controls style='align-self:center; padding:15px;' src="{{fichier}}"></audio>
+                                        {% else %}
+                                            <a href='{{ fichier }}'>{{ fichier | split ('/') | last  }}</a>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <p style='text-align:center'>{{ contenu[loop.index0] }}</p>
+                                {% else %}
+                                    <p>{{ message.getMessage() }}</p>
+                                {% endif %}
+                            </div>
                         </div>
                         <p class='date_message' date="{{ message.getDateEnvoi() | date}}" >{{ message.getDateEnvoi() | date()}}</p>
                     </div>
@@ -140,7 +183,26 @@
                             <div class='photo_conteneur'>
                                 <img class='photo' src='{{ asset(user.getPhoto()) }}' alt='photo_user'>
                             </div>
-                            <p class='message_contenu_user'>{{ message.getMessage() }}</p>
+                            <div class='message_contenu_user'>
+                                {% if not message.getFichier() is empty %}
+                                    {% for fichier in (message.getFichier() | split ('*')) %}
+                                        {% if '/img/' in fichier %}
+                                            <img src="{{fichier}}" alt='image fichier' class='image_message'>
+                                        {% elseif '/video/' in fichier %}
+                                            <video controls width="80%" style='align-self:center; padding:15px;'>
+                                                <source src="{{fichier}}" type="{{(message.getTypeFichier() | split('*'))[loop.index0]}}">
+                                            </video> 
+                                        {% elseif '/audio/' in fichier %}
+                                            <audio controls style='align-self:center; padding:15px;' src="{{fichier}}"></audio>
+                                        {% else %}
+                                            <a href='{{ fichier }}'>{{ fichier | split ('/') | last }}</a>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <p style='text-align:center'>{{ contenu[loop.index0] }}</p>
+                                {% else %}
+                                    <p>{{ message.getMessage() }}</p>
+                                {% endif %}
+                            </div>
                         </div>
                         <p class='date_message_user' date="{{ message.getDateEnvoi() | date}}" >{{ message.getDateEnvoi() | date}}</p>
                     </div>
@@ -149,17 +211,35 @@
         </div>
 
         <div id='zone_input'>
-            <div id='ajout_fichier'></div>
+            <input type='file' id='input_fichier' style='display:none' multiple>
+            <label id='ajout_fichier' for='input_fichier'>
+                <img class='image_bouton' src='{{asset('img/logo envoi blanc.svg')}}' alt='logo envoi de fichier'>
+            </label>
             <div id='creer_son_image_video'>
                 <div data-role="controls">
-                    <button >Recorder</button>
+                    <button >
+                        <div >
+                        </div>
+                    </button>
                 </div>
             </div>
             <div id='input_utilisateur'>
                 <textarea id='envoyer_message'></textarea>
             </div>
-            <div id='ajout_emote'></div>
-            <div id='plus_d_options'></div>
+            <div id='ajout_emote' onclick="emoticones()"><img class="smiley" src="{{ asset('img/sourire.png') }}"></div>
+        </div>
+        <div id="emoticones">
+            <img src="{{ asset('img/croix.svg') }}" onclick="fermer()">
+            <img src="{{ asset('img/sourire.png') }}" onclick="sourire()">
+            <img src="{{ asset('img/auréole.png') }}" onclick="auréole()">
+            <img src="{{ asset('img/bisous.png') }}" onclick="bisous()">
+            <img src="{{ asset('img/clinoeil.png') }}" onclick="clinoeil()">
+            <img src="{{ asset('img/coeur.png') }}" onclick="coeur()">
+            <img src="{{ asset('img/démon.png') }}" onclick="démon()">
+            <img src="{{ asset('img/joie.png') }}" onclick="joie()">
+            <img src="{{ asset('img/lunnette.png') }}" onclick="lunnette()">
+            <img src="{{ asset('img/peur.png') }}" onclick="peur()">
+            <img src="{{ asset('img/transpiration.png') }}" onclick="transpiration()">
         </div>
     </main>
 {% endblock %}

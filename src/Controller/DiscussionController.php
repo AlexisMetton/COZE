@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 Use App\Entity\Discussion;
+use App\Entity\Message;
 use App\Form\UsersType;
 use App\Repository\UsersRepository;
 use App\Repository\DiscussionRepository;
@@ -31,6 +32,7 @@ class DiscussionController extends AbstractController
         $user = $this->getUser();
 
         $discussions = $user->getDiscussions();
+
         $liste_discussion = [];
         if(count($discussions) > 1){
             for($i=0; $i<count($discussions); $i++){
@@ -44,6 +46,7 @@ class DiscussionController extends AbstractController
                 }
                 $liste_discussion[] = $discussions[$tmp];
                 $discussions[$tmp] = $discussions[$i];
+
             }
         }else if(count($discussions) == 1){
             $liste_discussion[] = $discussions[0];
@@ -125,7 +128,8 @@ class DiscussionController extends AbstractController
         $discussion_repository->add($discussion, true);
         $update = new Update('https://discussion/'.$membre ,json_encode(["id" => $discussion->getId()]));
         $hub->publish($update);
-
+        $update = new Update('https://discussion/'.$user->getId() ,json_encode(["id" => $discussion->getId()]));
+        $hub->publish($update);
         return $this->redirectToRoute('app_discussion', ['id' => $discussion->getId()]);
     }
 
@@ -164,6 +168,7 @@ class DiscussionController extends AbstractController
             return new JsonResponse('Erreur lors de la demande ajax');
         }
 
+
         if(count($discussions) > 1){
             for($i=0; $i<count($discussions); $i++){
                 $tmp = $i;
@@ -172,6 +177,7 @@ class DiscussionController extends AbstractController
                         if($discussions[$tmp]->getLastMessage()->getDateEnvoi() < $discussions[$j]->getLastMessage()->getDateEnvoi()){
                             $tmp = $j;
                         }
+
                     }
                 }
                 $liste_discussion[] = $discussions[$tmp];
@@ -197,7 +203,16 @@ class DiscussionController extends AbstractController
             }else{
                 $nom = $liste_discussion[$i] -> getNom();
             }
-            $jsonData[$idx++] = ['id' => $liste_discussion[$i] -> getId(), 'nom' => $nom, 'photo' => $liste_discussion[$i]->getPhoto(), 'message' => $message, 'date_envoi' => $heure_message];
+            if($liste_discussion[$i] -> getPhoto()){
+                $photo = $liste_discussion[$i] ->getPhoto();
+            }else{
+                foreach($liste_discussion[$i]->getMembres() as $membre){
+                    if ($membre->getUsername() != $user->getUsername()){
+                        $photo = $membre->getPhoto();
+                    }
+                }
+            }
+            $jsonData[$idx++] = ['id' => $liste_discussion[$i] -> getId(), 'nom' => $nom, 'photo' => $photo, 'message' => $message, 'date_envoi' => $heure_message];
         }
         return new JsonResponse($jsonData);
     }
@@ -227,7 +242,7 @@ class DiscussionController extends AbstractController
         }else{
             $nom = $discussion -> getNom();
         }
-        if(!$discussion -> getPhoto()){
+        if($discussion -> getPhoto()){
             $photo = $discussion ->getPhoto();
         }else{
             foreach($discussion->getMembres() as $membre){
@@ -272,7 +287,12 @@ class DiscussionController extends AbstractController
         foreach($notifs as $notif){
             if($notif->getUrl() == 'discussion/' . $id){
                 $notification_repository->remove($notif, true);
-            }
+            }           
+        }
+
+        foreach($discussion->getMessages() as $message){
+            $contenu[] = html_entity_decode($message->getMessage());
+
         }
 
         return $this->render('discussion/index.html.twig', [
@@ -280,6 +300,8 @@ class DiscussionController extends AbstractController
             'titre' => $nom,
             'membres' => $discussion->getMembres(),
             'messages' => $discussion->getMessages(),
+            'discussion' => $discussion->getId(),
+            'contenu' => $contenu
         ]);
     }
 
