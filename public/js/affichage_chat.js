@@ -26,14 +26,6 @@ eventSource.onmessage = e => {
     
 }
 
-(function(){
-    Object.entries(messages.children).forEach(entry => {
-        const [key, value] = entry;
-        value.lastElementChild.innerText = date_diff(new Date(value.lastElementChild.innerText));
-    });
-    messages.scrollTo(0, messages.scrollHeight);
-})()
-
 var myRecorder = {
     objects: {
         context: null,
@@ -77,6 +69,7 @@ var myRecorder = {
                     // Prepare the playback
                     var audioObject = $('<audio controls></audio>')
                             .attr('src', url);
+                           
 
                     // Prepare the download link
                     var downloadObject = $('<a>&#9660;</a>')
@@ -95,7 +88,21 @@ var myRecorder = {
             }
         }
     }
-};
+};  
+/*if(data['nom'] == user_username){
+    nouveauMessage.setAttribute('class', 'message_user');
+    nouveauMessage.innerHTML = '<h3 class=\'nom_user\'>'.concat(data['nom'], '</h3><div class=\'message_info_user\'><div class=\'photo_conteneur\'><img class=\'photo\' src=\'', data['photo'], '\' alt=\'photo\'></div><p class=\'message_contenu_user\'>',holderObject, '</p></div><p class=\'date_message_user\' date=\'', Date(data["heure"]["date"]),'\' >A l\'instant</p></div>');
+    messages.append(nouveauMessage);
+    messages.scrollTo(0, messages.scrollHeight);
+    e.srcElement.value = "";
+}else{
+    nouveauMessage.setAttribute('class', 'message');
+    nouveauMessage.innerHTML = '<h3 class=\'nom\'>'.concat(data['nom'], '</h3><div class=\'message_info\'><div class=\'photo_conteneur\'><img class=\'photo\' src=\'', data['photo'], '\' alt=\'photo\'></div><p class=\'message_contenu\'>', data['message'], '</p></div><p class=\'date_message\' date=\'', Date(data["heure"]["date"]),'\' >A l\'instant</p></div>');
+    messages.append(nouveauMessage);
+    messages.scrollTo(0, messages.scrollHeight);
+    e.srcElement.value = "";
+}*/
+
 
 // Prepare the recordings list
 var listObject = $('#liste_message');
@@ -117,3 +124,13 @@ $('[data-role="controls"] > button').click(function () {
         myRecorder.stop(listObject);
     }
 });
+
+(function(){
+    Object.entries(messages.children).forEach(entry => {
+        const [key, value] = entry;
+        value.lastElementChild.innerText = date_diff(new Date(value.lastElementChild.innerText));
+       
+    });
+    messages.scrollTo(0, messages.scrollHeight);
+})()
+

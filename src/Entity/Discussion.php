@@ -87,7 +87,7 @@ class Discussion
         return $this->messages;
     }
 
-    public function getLastMessage(): mixed
+    public function getLastMessage(): ?Message
     {
         return $this->messages[count($this->messages) - 1];
     }
