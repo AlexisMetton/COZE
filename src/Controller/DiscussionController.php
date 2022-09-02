@@ -290,6 +290,7 @@ class DiscussionController extends AbstractController
             }           
         }
 
+        $contenu = [];
         foreach($discussion->getMessages() as $message){
             $contenu[] = html_entity_decode($message->getMessage());
 

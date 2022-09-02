@@ -32,7 +32,7 @@ function envoyer(e){
             processData: false,
             success:function(data){
                 envoie.value = '';
-                if(fichierAEnvoyer != []){
+                if(fichierAEnvoyer != ''){
                     supprimerFichier(e);
                 }
             }
